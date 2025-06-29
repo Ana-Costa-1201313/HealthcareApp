@@ -1,0 +1,62 @@
+<p-dialog
+  header="Staff"
+  [visible]="showDetails"
+  (visibleChange)="showDetailsChange.emit($event)"  
+  [modal]="true"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <ng-template pTemplate="header">
+    <h4 class="fw-bold">{{ currentStaff?.name }}</h4>
+  </ng-template>
+
+  <div class="container">
+    <h5 class="title-separator separator">General Information</h5>
+    <hr class="line-separator separator" />
+
+    <div class="row">
+      <label for="role"> <b>Role:</b> {{ currentStaff?.role }}</label>
+
+      <label
+        for="specialization"
+        class="mt-2"
+        *ngIf="currentStaff?.specialization"
+        ><b>Specialization: </b> {{ currentStaff?.specialization }}</label
+      >
+      <label for="licenseNumber" class="mt-2" id="licenseNumber" *ngIf="currentStaff?.active"
+        ><b>License Number: </b>{{ currentStaff?.licenseNumber }}</label
+      >
+      <label for="mechanographicNumber" class="mt-2"
+        ><b>Mechanographic Number:</b>
+        {{ currentStaff?.mechanographicNum }}</label
+      >
+      <label for="active" class="mt-2"
+        ><b>Active: </b>
+        <span *ngIf="currentStaff?.active">Yes</span>
+        <span *ngIf="!currentStaff?.active">No</span>
+      </label>
+      <label
+        for="availabilitySlots"
+        class="mt-2"
+        *ngIf="currentStaff?.availabilitySlots?.length > 0"
+        ><b>Availability Slots: </b>
+        <ul class="ps-4">
+          <li *ngFor="let slot of currentStaff?.availabilitySlots">
+            {{ showAvailabilitySlots(slot) }}
+          </li>
+        </ul>
+      </label>
+    </div>
+
+    <h5 class="title-separator mt-4 separator">Contact Information</h5>
+    <hr class="line-separator separator" />
+
+    <div class="row">
+      <label for="email"><b>Email:</b> {{ currentStaff?.email }}</label>
+      <label for="phone" class="mt-2" id="phone" *ngIf="currentStaff?.phone"
+        ><b>Phone: </b> {{ currentStaff?.phone }}
+      </label>
+    </div>
+  </div>
+</p-dialog>

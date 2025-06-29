@@ -1,0 +1,11 @@
+hr.rounded {
+    border-top: 8px solid #424040;
+    border-radius: 5px;
+  }
+
+  .privacy-policy-button {
+    position: fixed;
+    bottom: 20px; 
+    right: 20px; 
+    z-index: 1000; 
+}

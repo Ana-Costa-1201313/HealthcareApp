@@ -1,0 +1,191 @@
+<div class="mb-4">
+  <app-menubar></app-menubar>
+</div>
+<div class="text-center">
+  <h1 class="fw-bold mt-2 main-title mb-4">
+    Specialization
+    <p-button
+      icon="pi pi-plus"
+      class="me-3 ms-3"
+      (click)="openCreateModal()"
+      id="buttonCreateSpecialization"
+    />
+  </h1>
+</div>
+<div class="container">
+  <p-messages [(value)]="message" id="message" />
+  <p-table
+    [value]="specializationList"
+    styleClass="p-datatable-striped"
+    [tableStyle]="{ 'min-width': '20rem' }"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Name</th>
+        <th>Code</th>
+        <th></th>
+      </tr>
+      <tr>
+        <th>
+          <p-columnFilter
+            type="text"
+            field="name"
+            placeholder="Search by name"
+            ariaLabel="Filter Name"
+            [matchModeOptions]="matchModeOptions"
+            matchMode="contains"
+          />
+        </th>
+        <th>
+          <p-columnFilter
+            type="text"
+            field="code"
+            placeholder="Search by code"
+            ariaLabel="Filter Code"
+            [matchModeOptions]="matchModeOptions"
+            matchMode="contains"
+          />
+        </th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-spec>
+      <tr>
+        <td>{{ spec.name }}</td>
+        <td>{{ spec.code }}</td>
+        <td class="text-center">
+          <p-button
+            icon="pi pi-eye"
+            class="me-2"
+            [text]="true"
+            (click)="openDetailsModal(spec)"
+            id="buttonDetails"
+          />
+          <p-button
+            icon="pi pi-pencil"
+            class="me-2"
+            [text]="true"
+            (click)="openEditModal(spec)"
+            id="buttonEditSpec"
+          />
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  header="Specialization"
+  [(visible)]="showCreate"
+  [modal]="true"
+  [style]="{ width: '26vw' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <ng-template pTemplate="header">
+    <h4 class="fw-bold">Create Specialization</h4>
+  </ng-template>
+  <form [formGroup]="createSpecializationForm" (ngSubmit)="addSpecialization()">
+    <span class="p-float-label mt-4 mb-4">
+      <input pInputText formControlName="name" autoWidth="false" id="name" />
+      <label for="name">Name</label>
+    </span>
+
+    <p-floatLabel class="mt-4 mb-4">
+      <textarea
+        id="float-input"
+        rows="5"
+        cols="30"
+        formControlName="description"
+        pInputTextarea
+        [autoResize]="false"
+        id="description"
+      ></textarea>
+      <label for="float-input">Description</label>
+    </p-floatLabel>
+
+    <p-button
+      class="mt-4 d-block"
+      type="Submit"
+      label="Submit"
+      [disabled]="createSpecializationForm.invalid"
+      id="buttonCreateSubmit"
+    />
+  </form>
+</p-dialog>
+
+<p-dialog
+  header="Edit Specialization"
+  [(visible)]="showEdit"
+  [modal]="true"
+  [style]="{ width: '50vw', height: '70vh' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <ng-template pTemplate="header">
+    <h4 class="fw-bold">Edit Specialization</h4>
+  </ng-template>
+  <form
+    [formGroup]="createSpecializationForm"
+    (ngSubmit)="editSpecialization()"
+    class="form-layout"
+  >
+    <div class="form-group">
+      <label for="name">Name:</label>
+      <input pInputText type="text" id="name" formControlName="name" required />
+    </div>
+    <div class="form-group">
+      <label for="description">Description:</label>
+      <textarea
+        pInputTextarea
+        id="description"
+        formControlName="description"
+      ></textarea>
+    </div>
+    <div class="text-center mt-4">
+      <button
+        pButton
+        type="submit"
+        label="Save Changes"
+        icon="pi pi-check"
+        class="p-button-success"
+      ></button>
+      <button
+        pButton
+        type="button"
+        label="Cancel"
+        icon="pi pi-times"
+        (click)="showEdit = false"
+        class="p-button-secondary ms-2"
+      ></button>
+    </div>
+  </form>
+</p-dialog>
+
+<p-dialog
+  header="Specialization"
+  [(visible)]="showDetails"
+  [modal]="true"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <ng-template pTemplate="header">
+    <h4 class="fw-bold" id="name">{{ selectedSpecialization?.name }}</h4>
+  </ng-template>
+  <div class="container">
+    <div class="row">
+      <label id="code" for="code"
+        ><b>Code:</b> {{ selectedSpecialization?.code }}</label
+      >
+    </div>
+    <div class="row mt-3">
+      <label
+        id="description"
+        for="description"
+        *ngIf="selectedSpecialization?.description"
+        ><b>Description:</b> {{ selectedSpecialization?.description }}</label
+      >
+    </div>
+  </div>
+</p-dialog>

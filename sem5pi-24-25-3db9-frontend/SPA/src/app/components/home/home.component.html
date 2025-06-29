@@ -1,0 +1,160 @@
+<div>
+  <app-menubar></app-menubar>
+</div>
+
+<div class="text-center">
+  <h1 class="fw-bold mt-2 main-title">Healthcare Application</h1>
+</div>
+
+<div class="container">
+  <div class="row mt-5 text-center">
+    <div class="col" *ngIf="role == 'Admin'">
+      <div class="card card-border">
+        <div class="card-body">
+          <h5 class="card-title fw-bold card-title">User</h5>
+          <p class="card-text">Manage the details of all registered users.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col" *ngIf="role == 'Admin'">
+      <div class="card card-border" routerLink="/patient">
+        <div class="card-body">
+          <h5 class="card-title fw-bold card-title">Patient</h5>
+          <p class="card-text">
+            Access patient profiles and manage health records.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5 text-center">
+    <div class="col" *ngIf="role == 'Admin'">
+      <div class="card card-border" routerLink="/staff">
+        <div class="card-body">
+          <h5 class="card-title fw-bold card-title">Staff</h5>
+          <p class="card-text">
+            Check information about healthcare professionals.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col" *ngIf="role == 'Admin'">
+      <div class="card card-border" routerLink="/specialization">
+        <div class="card-body">
+          <h5 class="card-title fw-bold card-title">Specialization</h5>
+          <p class="card-text">Areas of expertise for better patient care.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5 text-center">
+    <div class="col" *ngIf="role == 'Admin'">
+      <div class="card card-border" routerLink="/operationtype">
+        <div class="card-body">
+          <h5 class="card-title fw-bold card-title">Operation Type</h5>
+          <p class="card-text">
+            Types of medical operations suited to patient needs.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col" *ngIf="role == 'Admin' || role == 'Doctor'">
+      <div class="card card-border" routerLink="/operationrequest">
+        <div class="card-body">
+          <h5 class="card-title fw-bold card-title">Operation Request</h5>
+          <p class="card-text">
+            Submit and track requests for scheduled operations.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5 text-center">
+    <div class="col" *ngIf="role == 'Admin'">
+      <div class="card card-border" routerLink="/planning">
+        <div class="card-body">
+          <h5 class="card-title fw-bold card-title">Operation Planning</h5>
+          <p class="card-text">Plan operations for a given day and room.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div
+        class="card card-border"
+        *ngIf="
+          role == 'Admin' ||
+          role == 'Doctor' ||
+          role == 'Nurse' ||
+          role == 'Technician'
+        "
+        routerLink="/visualization"
+      >
+        <div class="card-body">
+          <h5 class="card-title fw-bold card-title">3D Room visualization</h5>
+          <p class="card-text">
+            Check the 3D Model of all operations rooms and if they are
+            scheduled.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5 text-center">
+    <div class="col" *ngIf="role == 'Admin' || role == 'Doctor'">
+      <div class="card card-border" routerLink="/allergies">
+        <div class="card-body">
+          <h5 class="card-title fw-bold card-title">Allergy</h5>
+          <p class="card-text">Manage and view patient allergy details.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col" *ngIf="role == 'Admin' || role == 'Doctor'">
+      <div class="card card-border" routerLink="/medicalcondition">
+        <div class="card-body">
+          <h5 class="card-title fw-bold card-title">Medical Condition</h5>
+          <p class="card-text">Manage and view medical conditions.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5 text-center">
+    <div class="col" *ngIf="role == 'Admin' || role == 'Doctor'">
+      <div class="card card-border" routerLink="/patientMedicalRecord">
+        <div class="card-body">
+          <h5 class="card-title fw-bold card-title">Patient Medical Record</h5>
+          <p class="card-text">
+            Access and manage detailed patient medical history and treatments.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col" *ngIf="role == 'Admin'">
+      <div class="card card-border" routerLink="/room">
+        <div class="card-body">
+          <h5 class="card-title fw-bold card-title">Room Management</h5>
+          <p class="card-text">Manage rooms and Room Types</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5 text-center">
+    <div class="col" *ngIf="role == 'Admin' || role == 'Doctor'">
+      <div class="card card-border" routerLink="/appointment">
+        <div class="card-body">
+          <h5 class="card-title fw-bold card-title">Surgery Appointment</h5>
+          <p class="card-text">
+            Schedule and manage surgery appointments for patients.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col" *ngIf="role == 'Patient'">
+      <div class="card card-border" routerLink="/patientprofile">
+        <div class="card-body">
+          <h5 class="card-title fw-bold card-title">Patient Profile</h5>
+          <p class="card-text">Edit your patient profile.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

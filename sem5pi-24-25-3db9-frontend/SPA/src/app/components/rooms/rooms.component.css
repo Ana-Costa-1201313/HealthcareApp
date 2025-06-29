@@ -1,0 +1,21 @@
+.main-title {
+  color: #0077b6
+}
+
+.card {
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card-title {
+  color: #03045e
+}
+
+.card-border {
+  border-color: #00b4d8;
+}
+
+.card:hover {
+  border-color: #0077b6;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}

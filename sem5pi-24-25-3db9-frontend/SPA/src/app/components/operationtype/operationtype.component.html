@@ -1,0 +1,218 @@
+<div class="mb-4">
+  <app-menubar></app-menubar>
+</div>
+<div class="text-center">
+  <h1 class="fw-bold mt-2 main-title mb-4">Operation Type
+    <p-button icon="pi pi-plus" class="me-3 ms-3" (click)="openCreateModal()" id="buttonCreateOperationType"/>
+  </h1>
+</div>
+
+<div class="container">
+  <p-messages [(value)]="message" id="message"/>
+
+  <p-table [value]="filteredOperationTypeList" styleClass="p-datatable-striped" [tableStyle]="{ 'min-width': '20rem' }">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>
+          <p-columnFilter type="text" field="name" placeholder="Search by name" ariaLabel="Filter Name"
+            [matchModeOptions]="matchModeOptions" matchMode="contains" />
+        </th>
+        <th>
+          <p-columnFilter type="text" field="specialization" placeholder="Search by specialization"
+            ariaLabel="Filter Specialization" [matchModeOptions]="matchModeOptions" matchMode="contains" />
+        </th>
+        <th>
+          <div class="d-flex align-items-center">
+            <span class="me-3">Status</span>
+            <p-columnFilter type="boolean" field="active" placeholder="Search by status" ariaLabel="Filter status"
+              [matchModeOptions]="matchModeOptions" matchMode="equals" />
+          </div>
+        </th>
+
+        <th></th>
+        <th></th>
+      </tr>
+      <tr>
+        <th class="w-25">Name</th>
+        <th class="w-25">Preparation time (min)</th>
+        <th class="w-15">Surgery time (min)</th>
+        <th class="w-15">Cleaning time (min)</th>
+        <th class="w-10"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-opType>
+      <tr>
+        <td>{{ opType.name }}</td>
+        <td>{{ opType.anesthesiaPatientPreparationInMinutes }}</td>
+        <td>{{ opType.surgeryInMinutes }}</td>
+        <td>{{ opType.cleaningInMinutes }}</td>
+        <td class="text-center">
+
+
+          <p-button icon="pi pi-eye" class="me-3" [rounded]="true" [text]="true" (click)="openDetailsModal(opType)" id="buttonDetailOperationType"/>
+          <p-button icon="pi pi-pencil" class="me-3" [rounded]="true" [text]="true" [disabled]="!opType.active"
+            (click)="openUpdateModal(opType)" id="buttonUpdateOperationType"/>
+          <p-button icon="pi pi-trash" class="me-3" [rounded]="true" [text]="true" [disabled]="!opType.active"
+            (click)="openDeactivateModal(opType)" id="buttonDeactivateOperationType"/>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog header="Operation Type" [(visible)]="showDetails" [modal]="true" [style]="{ width: '50vw' }"
+  [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="header">
+    <h4 class="fw-bold">{{ currentOpType?.name }}</h4>
+  </ng-template>
+  <div class="container">
+    <h5 class="title-separator separator">General Information</h5>
+    <hr class="line-separator separator" />
+    <div class="row">
+      <label id="name" for="name"><b>Name:</b> {{ currentOpType?.name }}</label>
+      <label id="preparation" for="preparation" class="mt-2"><b>Anesthesia/Preparation:</b> {{
+        currentOpType?.anesthesiaPatientPreparationInMinutes }} min</label>
+      <label id="surgery" for="surgery" class="mt-2"><b>Surgery:</b> {{ currentOpType?.surgeryInMinutes }} min</label>
+      <label id="cleaning" for="cleaning" class="mt-2"><b>Cleaning:</b> {{ currentOpType?.cleaningInMinutes }} min</label>
+      <label for="requiredStaff" class="mt-2"><b>Required Staff:</b>
+      </label>
+      <ul class="ps-5">
+        <li *ngFor="let reqStaff of currentOpType?.requiredStaff">
+          {{ reqStaff.total }} {{ reqStaff.specialization }}
+        </li>
+      </ul>
+      <label for="active" class="mt-2"><b>Active:</b>
+        <span class="status-icon">
+          <i *ngIf="currentOpType?.active" class="pi pi-check-circle text-success ps-1"></i>
+          <i *ngIf="!currentOpType?.active" class="pi pi-times-circle text-danger ps-1"></i>
+        </span>
+      </label>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog header="Operation Type" [(visible)]="deactivate" [modal]="true" [style]="{ width: '25vw' }"
+  [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="header">
+    <h4 class="fw-bold">Deactivate Operation Type</h4>
+  </ng-template>
+  <h4 class="fw-bold">{{ currentOpType?.name }}</h4>
+
+  <div class="mt-2 mb-4">Are you sure you want to deactivate this operation type?</div>
+  <p-button label="Confirm" icon="pi pi-check" class="me-3" [rounded]="true" [text]="true"
+    (click)="deactivateOperationType()" id="buttonConfirmDeactivate"/>
+  <p-button label="Cancel" icon="pi pi-times" class="me-3" [rounded]="true" [text]="true" severity="danger"
+    (click)="deactivate = false" />
+</p-dialog>
+
+<p-dialog header="OperationType" [(visible)]="showCreate" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false"
+  [resizable]="false">
+  <ng-template pTemplate="header">
+    <h4 class="fw-bold">Create Operation Type</h4>
+  </ng-template>
+  <form [formGroup]="createOperationTypeForm" (ngSubmit)="addOperationType()">
+
+    <span class="p-float-label mt-4">
+      <input pInputText formControlName="name" id="name" autoWidth="false" [style]="{ minWidth: '530px', maxWidth: '530px' }"/>
+      <label for="name">Name</label>
+    </span>
+
+    <span class="p-float-label mt-4">
+      <p-inputNumber inputId="integeronly" id="preparation" formControlName="anesthesiaPatientPreparationInMinutes" autoWidth="false"
+        [min]="1" />
+      <label for="anesthesiaPatientPreparationInMinutes">Anesthesia duration</label>
+    </span>
+
+    <span class="p-float-label mt-4">
+      <p-inputNumber inputId="integeronly" id="surgery" formControlName="surgeryInMinutes" autoWidth="false" [min]="1" />
+      <label for="surgeryInMinutes">Surgery duration</label>
+    </span>
+
+    <span class="p-float-label mt-4">
+      <p-inputNumber inputId="integeronly" id="cleaning" formControlName="cleaningInMinutes" autoWidth="false" [min]="1" />
+      <label for="cleaningInMinutes">Cleaning duration</label>
+    </span>
+
+
+    <div formArrayName="requiredStaff">
+      <h5 class="mt-3">Required Staff</h5>
+
+      <div *ngFor="let staff of requiredStaff.controls; let i = index" [formGroupName]="i"
+        class="d-flex align-items-center gap-2 mb-4 mt-4">
+
+        <span class="p-float-label">
+          <p-inputNumber id="total{{i}}" formControlName="total" placeholder="Total" [min]="1" />
+          <label for="total">Total</label>
+        </span>
+
+        <p-dropdown class="d-block" id="specialization{{i}}" placeholder="Specialization" formControlName="specialization"
+          [options]="specializationsNames" [showClear]="true" autoWidth="false"
+          [style]="{ minWidth: '300px', maxWidth: '300px' }" />
+
+        <button pButton icon="pi pi-times" class="p-button-danger p-button-sm" type="button"
+          (click)="removeRequiredStaff(i)" aria-label="Remove"></button>
+      </div>
+
+      <button pButton icon="pi pi-plus" id="buttonCreateRequiredStaff" class="p-button-secondary" type="button" (click)="addRequiredStaff()"
+        label="Add Required Staff"></button>
+      <p-button class="mt-4 d-block" id="buttonCreateSubmit" type="Submit" label="Submit" [disabled]="createOperationTypeForm.invalid" />
+    </div>
+
+  </form>
+</p-dialog>
+
+<p-dialog header="OperationType" [(visible)]="showUpdate" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false"
+  [resizable]="false">
+  <ng-template pTemplate="header">
+    <h4 class="fw-bold">Update Operation Type</h4>
+  </ng-template>
+  <form [formGroup]="updateOperationTypeForm" (ngSubmit)="updateOperationType()">
+
+    <span class="p-float-label mt-4">
+      <input pInputText id="name" formControlName="name" autoWidth="false" [style]="{ minWidth: '530px', maxWidth: '530px' }"/>
+      <label for="name">{{ currentOpType?.name }}</label>
+    </span>
+
+    <span class="p-float-label mt-4">
+      <p-inputNumber inputId="integeronly" id="preparation" formControlName="anesthesiaPatientPreparationInMinutes" autoWidth="false"
+        [min]="1" />
+      <label for="anesthesiaPatientPreparationInMinutes">{{
+        currentOpType?.anesthesiaPatientPreparationInMinutes}}</label>
+    </span>
+
+    <span class="p-float-label mt-4">
+      <p-inputNumber inputId="integeronly" id="surgery" formControlName="surgeryInMinutes" autoWidth="false" [min]="1" />
+      <label for="surgeryInMinutes">{{ currentOpType?.surgeryInMinutes }}</label>
+    </span>
+
+    <span class="p-float-label mt-4">
+      <p-inputNumber inputId="integeronly" id="cleaning" formControlName="cleaningInMinutes" autoWidth="false" [min]="1" />
+      <label for="cleaningInMinutes">{{ currentOpType?.cleaningInMinutes }}</label>
+    </span>
+
+    <div formArrayName="requiredStaff">
+      <h5 class="mt-3">Required Staff</h5>
+    
+      <div *ngFor="let staff of updateRequiredStaff.controls; let i = index" [formGroupName]="i"
+        class="d-flex align-items-center gap-2 mb-4 mt-4">
+    
+        <span class="p-float-label">
+          <p-inputNumber formControlName="total" placeholder="Total" [min]="1" />
+          <label for="total">Total</label>
+        </span>
+    
+        <p-dropdown class="d-block" placeholder="Specialization" formControlName="specialization"
+          [options]="specializationsNames" [showClear]="true" autoWidth="false"
+          [style]="{ minWidth: '300px', maxWidth: '300px' }" />
+    
+        <button pButton icon="pi pi-times" class="p-button-danger p-button-sm" type="button"
+          (click)="removeUpdateRequiredStaff(i)" aria-label="Remove"></button>
+      </div>
+    
+      <button pButton icon="pi pi-plus" class="p-button-secondary" type="button" (click)="addUpdateRequiredStaff()"
+        label="Add Required Staff"></button>
+      <p-button class="mt-4 d-block" id="buttonUpdateSubmit" type="Submit" label="Submit" [disabled]="updateOperationTypeForm.invalid" />
+    </div>
+    
+  </form>
+</p-dialog>

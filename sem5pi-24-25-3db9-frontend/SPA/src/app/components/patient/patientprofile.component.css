@@ -1,0 +1,29 @@
+.form-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  input[pInputText] {
+    border-radius: 4px;
+    padding: 0.5rem;
+    border: 1px solid #ced4da;
+    font-size: 1rem;
+  }
+  
+  input[pInputText]:focus {
+    outline: none;
+    border-color: #80bdff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+  

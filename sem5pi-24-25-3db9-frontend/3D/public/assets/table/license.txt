@@ -1,0 +1,11 @@
+Model Information:
+* title:	Operating Table
+* source:	https://sketchfab.com/3d-models/operating-table-4a7904abc7da49a3b080416bee4d4777
+* author:	thekaisanofficial (https://sketchfab.com/thekaisanofficial)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Operating Table" (https://sketchfab.com/3d-models/operating-table-4a7904abc7da49a3b080416bee4d4777) by thekaisanofficial (https://sketchfab.com/thekaisanofficial) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

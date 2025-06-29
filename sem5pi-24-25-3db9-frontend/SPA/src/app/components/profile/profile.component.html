@@ -1,0 +1,218 @@
+<div class="mb-4">
+    <app-menubar></app-menubar>
+</div>
+
+<div class="container text-center mt-5">
+    <div class="row align-items-start">
+        <div class="col-4 ">
+            <div class="d-flex justify-content-center align-items-center bg-light rounded-circle border border-secondary"
+                style="width: 250px; height: 250px;">
+                <i class="pi pi-user text-secondary" style="font-size: 10rem;"></i>
+            </div>
+        </div>
+
+        <div class="col-8 text-start" *ngIf="accountPatient || accountStaff || role === 'Admin'">
+            <p-tabView>
+                <p-tabPanel header="Personal Information">
+                    <div>
+                        <h3 *ngIf="role === 'Patient'">{{ accountPatient.fullName}}</h3>
+                        <h3 *ngIf="role === 'Admin'">Admin</h3>
+                        <h3 *ngIf="role === 'Doctor' || role === 'Nurse' || role === 'Technician'">{{ accountStaff.role
+                            }} {{ accountStaff.name}}</h3>
+                    </div>
+                    <div *ngIf="role === 'Patient'">
+                        <h5>Date of birth: {{ accountPatient.dateOfBirth | date: 'yyyy-MM-dd'}}</h5>
+                    </div>
+                    <div>
+                        <h5 *ngIf="role === 'Patient'">Email: {{ accountPatient.email}}</h5>
+                        <h5 *ngIf="role === 'Doctor' || role === 'Nurse' || role === 'Technician'">Email: {{
+                            accountStaff.email}}</h5>
+                    </div>
+                    <div *ngIf="role === 'Doctor' || role === 'Nurse' || role === 'Technician'">
+                        <h5>Phone number: {{ accountStaff.phone}}</h5>
+                    </div>
+                    <div
+                        *ngIf="role === 'Doctor' || role === 'Nurse' || role === 'Technician' && accountStaff.specialization">
+                        <h5>Specialization: {{ accountStaff.specialization}}</h5>
+                    </div>
+                    <div *ngIf="role === 'Doctor' || role === 'Nurse' || role === 'Technician'">
+                        <h5>License number: {{ accountStaff.licenseNumber}}</h5>
+                    </div>
+
+
+
+                </p-tabPanel>
+                <p-tabPanel header="Other" *ngIf="role === 'Patient'">
+                    <div class="text-center py-4">
+                        <h2 class="mb-4">Download Your Medical History</h2>
+                        <form [formGroup]="formFormatDownload" class="d-inline-block text-start p-4">
+                            <div class="mb-3">
+                                <label for="formatOptions" class="form-label fw-bold">Select File Format:</label>
+                                <p-selectButton id="formatOptions" [options]="stateOptions" formControlName="value"
+                                    optionLabel="label" optionValue="value" class="w-100">
+                                </p-selectButton>
+                            </div>
+                            <div class="text-center mt-4">
+                                <button type="button" class="btn btn-primary btn-lg"
+                                    [disabled]="!formFormatDownload.get('value')?.value"
+                                    (click)="downloadMedicalHistory()">
+                                    Download
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <hr class="rounded">
+
+                    <div class="text-center py-4">
+                        <h2 class="mb-4">Request the deletion of my personal data </h2>
+
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-danger btn-lg" (click)="deleteRequest()">
+                                Delete my data
+                            </button>
+                        </div>
+                    </div>
+                </p-tabPanel>
+
+            </p-tabView>
+        </div>
+    </div>
+</div>
+
+<div class="privacy-policy-button">
+    <button type="button" class="btn btn-link" (click)="showPrivacyPolicy = true">
+        View Privacy Policy
+    </button>
+</div>
+
+<p-dialog header="Request Data Deletion" [(visible)]="deactivate" [modal]="true" [draggable]="false" [resizable]="false">
+    <ng-template pTemplate="header">
+        <h4 class="fw-bold">Request data deletion</h4>
+    </ng-template>
+    <div class="mt-2 mb-4">Are you sure you want to make a request to delete your personal data?</div>
+    <p-button label="Confirm" icon="pi pi-check" class="me-3" [rounded]="true" [text]="true"
+         id="buttonConfirmDeactivate" (click)="sendRequest()" />
+    <p-button label="Cancel" icon="pi pi-times" class="me-3" [rounded]="true" [text]="true" severity="danger"
+        (click)="deactivate = false" />
+</p-dialog>
+
+<p-dialog
+  header="Política de Privacidade"
+  [(visible)]="showPrivacyPolicy"
+  [modal]="true"
+  [style]="{ width: '60vw', height: '90vh' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+<div class="privacy-policy-content">
+  <h3>1. Dados Pessoais Tratados</h3>
+  <p>O sistema recolhe e utiliza os seguintes dados pessoais dos pacientes:</p>
+  <ul>
+    <li>Nome completo</li>
+    <li>Data de nascimento</li>
+    <li>Contacto telefónico</li>
+    <li>Email</li>
+    <li>Histórico de alergias e consultas</li>
+    <li>Contacto de emergência</li>
+  </ul>
+
+  <h3>2. Finalidade do Tratamento dos Dados</h3>
+  <p>Os dados serão utilizados para:</p>
+  <ul>
+    <li>Identificar os pacientes de forma única no sistema e garantir a precisão das informações.</li>
+    <li>Facilitar a comunicação com os pacientes sobre consultas, alterações de agenda e informações relevantes.</li>
+    <li>Monitorizar o histórico médico e o progresso dos pacientes para melhorar a qualidade do atendimento.</li>
+    <li>Planear e otimizar cirurgias com base nas necessidades médicas e na disponibilidade de recursos.</li>
+    <li>Garantir a segurança dos pacientes e prevenir complicações médicas relacionadas a alergias.</li>
+    <li>Assegurar que familiares ou responsáveis sejam informados em situações de emergência.</li>
+    <li>Manter um histórico clínico detalhado para consultas futuras e análise médica.</li>
+  </ul>
+
+  <h3>3. Definições Importantes</h3>
+  <p>Para facilitar a compreensão da Política de Privacidade, de seguida encontra-se uma breve explicação de certos conceitos a partir da definição presente no artigo 4º do RGPD:</p>
+  <ul>
+    <li><strong>Dados Pessoais:</strong> Informações que identificam ou podem identificar uma pessoa singular, como nome, número de identificação, localização, ou outros elementos específicos da identidade física, genética, mental, económica, cultural ou social.</li>
+    <li><strong>Tratamento de Dados:</strong> Qualquer operação realizada com dados pessoais, incluindo recolha, armazenamento, consulta, utilização, transmissão ou eliminação.</li>
+    <li><strong>Responsável pelo Tratamento dos Dados:</strong> A entidade que define as finalidades e os meios para o tratamento dos dados pessoais.</li>
+    <li><strong>Autoridade de Controlo:</strong> Autoridade pública independente que, no caso de Portugal, é a Comissão Nacional de Proteção de Dados (CNPD), a quem compete fiscalizar a correta aplicação da legislação sobre proteção de dados pessoais.</li>
+  </ul>
+
+  <h3>4. Responsável pelo Tratamento de Dados</h3>
+  <p>A clínica é a entidade responsável pelo tratamento de dados pessoais dos seus pacientes/utentes no contexto dos serviços que presta.</p>
+  <p>Assim, como responsável pelo tratamento dos seus dados pessoais na qualidade de paciente/utente, a clínica:</p>
+  <ul>
+    <li>Assegura que o tratamento dos seus dados pessoais é realizado apenas no âmbito da(s) finalidade(s) para as quais foram recolhidos ou para finalidades compatíveis com os propósitos inicialmente definidos;</li>
+    <li>Compromete-se a implementar uma cultura de proteção e minimização de dados, limitando a recolha, utilização e conservação aos dados estritamente necessários para a prestação dos serviços de saúde;</li>
+    <li>Garante a confidencialidade e segurança dos dados pessoais, adotando medidas técnicas e organizativas adequadas para proteger contra acessos não autorizados, perda, destruição ou divulgação indevida;</li>
+    <li>Não procede à divulgação ou partilha dos dados pessoais dos seus pacientes/utentes para fins comerciais ou de publicidade, salvo se tiver o consentimento expresso para tal.</li>
+  </ul>
+
+  <h3>5. Fundamento para o Tratamento de Dados</h3>
+<p>O tratamento de dados pessoais realizado pela clínica baseia-se nas seguintes bases legais, de acordo com o disposto nos artigos 6.º e 9.º do Regulamento Geral de Proteção de Dados (RGPD):</p>
+<ul>
+    <li><strong>Execução de um Contrato:</strong> O tratamento é necessário para cumprir um contrato do qual o titular dos dados é parte ou para realizar diligências pré-contratuais a pedido do titular dos dados, incluindo:</li>
+    <ul>
+        <li><strong>Gestão de consultas e cirurgias:</strong> Informações como contacto telefónico, email, e disponibilidade são indispensáveis para agendar consultas e operações, permitindo à clínica cumprir os serviços médicos acordados com o paciente.</li>
+        <li><strong>Sem este tratamento:</strong> Seria impossível garantir a prestação de cuidados de saúde adequados, comprometendo a execução do contrato entre o paciente e a clínica.</li>
+    </ul>
+    <li><strong>Consentimento Explícito:</strong> O consentimento é obtido de forma clara, livre e inequívoca, sendo indispensável para o tratamento de categorias especiais de dados, tais como:</li>
+    <ul>
+        <li><strong>Histórico médico e alergias:</strong> Esses dados, considerados sensíveis, exigem o consentimento explícito do paciente para serem armazenados e utilizados para finalidades específicas, como planeamento de cirurgias.</li>
+        <li><strong>Consentimento:</strong> Permite ao paciente ter controlo sobre os seus dados sensíveis, em conformidade com o Artigo 9.º do RGPD.</li>
+    </ul>
+    <li><strong>Interesse Legítimo:</strong> O tratamento de dados pode ser realizado com base em interesses legítimos da clínica desde que não prejudiquem os direitos e liberdades fundamentais dos titulares dos dados, nomeadamente:</li>
+    <ul>
+        <li><strong>Otimização de recursos hospitalares:</strong> A utilização de dados para planear de forma eficiente as cirurgias e gerir a disponibilidade do staff e das salas contribui para a melhoria da qualidade do serviço, beneficiando tanto os pacientes quanto a organização.</li>
+    </ul>
+    <li><strong>Defesa de Interesses Vitais:</strong> O tratamento é permitido quando necessário para proteger os interesses vitais do titular dos dados ou de outra pessoa singular, como em situações de emergência médica.</li>
+</ul>
+
+
+  <h3>6. Conformidade com o RGPD</h3>
+  <p>O tratamento de dados pessoais realizado pela Clínica respeita as seguintes disposições do RGPD:</p>
+  <ul>
+    <li><strong>Dados Pessoais Comuns:</strong> O tratamento de dados pessoais comuns é considerado lícito quando o titular dos dados tiver dado o seu consentimento para uma ou mais finalidades específicas, ou o tratamento for necessário para a execução de um contrato.</li>
+    <li><strong>Dados Pessoais Sensíveis:</strong> O tratamento de categorias especiais de dados, só será realizado se o titular dos dados tiver dado o seu consentimento explícito para o tratamento desses dados.</li>
+  </ul>
+
+  <h3>7. Direitos dos Titulares de Dados Pessoais</h3>
+<p>Os titulares dos dados pessoais têm o direito de exercer os seus direitos previstos no RGPD. Para tal, podem entrar em contacto com o Encarregado de Proteção de Dados (EPD) através do seguinte email: <strong>bernardoSilva&#64;gmail.com</strong>.</p>
+<p>De acordo com o RGPD, os titulares dos dados dispõem dos seguintes direitos:</p>
+<ul>
+    <li><strong>Direito de apresentar uma reclamação</strong> junto da Autoridade de Controlo Nacional, a Comissão Nacional de Proteção de Dados (CNPD), caso considerem que os seus direitos foram violados (Artigo 12.º, n.º 4);</li>
+    <li><strong>Direito de retirar o consentimento</strong>, a qualquer momento, sempre que o tratamento de dados se baseie no consentimento (Artigo 7.º, n.º 3);</li>
+    <li><strong>Direito à informação sobre o tratamento</strong> dos seus dados pessoais (Artigos 13.º);</li>
+    <li><strong>Direito de acesso</strong> aos seus dados pessoais e a obter uma cópia das informações tratadas (Artigo 15.º);</li>
+    <li><strong>Direito à retificação</strong> dos seus dados pessoais, garantindo a sua exatidão e atualização (Artigo 16.º);</li>
+    <li><strong>Direito ao apagamento dos dados pessoais</strong> (“Direito a ser esquecido”), salvo quando o tratamento for necessário para o cumprimento de obrigações legais ou outras exceções previstas no Artigo 17.º do RGPD;</li>
+    <li><strong>Direito à limitação do tratamento</strong> dos seus dados, nos casos previstos no Artigo 18.º;</li>
+    <li><strong>Direito de ser notificado</strong> em caso de retificação, apagamento ou limitação dos dados (Artigo 19.º);</li>
+    <li><strong>Direito à portabilidade dos dados</strong>, permitindo obter e reutilizar os seus dados pessoais noutros serviços ou plataformas (Artigo 20.º);</li>
+    <li><strong>Direito de oposição</strong> ao tratamento dos seus dados pessoais, em determinadas circunstâncias (Artigo 21.º).</li>
+</ul>
+<p>Além disso, caso o tratamento dos seus dados pessoais tenha como fundamento o consentimento, o titular tem o direito de o retirar a qualquer momento, sem comprometer a legalidade do tratamento efetuado antes da retirada do consentimento.</p>
+
+
+  <h3>8. Encarregado de Proteção de Dados (EPD)</h3>
+  <p>A clínica nomeou um Encarregado de Proteção de Dados, que pode ser contactado através do endereço de email <strong>bernardoSilva&#64;gmail.com</strong>.</p>
+
+  <h3>9. Conservação dos Dados</h3>
+<p>Os dados pessoais recolhidos serão conservados pelo período necessário para cumprir as finalidades a que se destinam, respeitando os seguintes prazos:</p>
+<ul>
+    <li><strong>Registos médicos e dados pessoais:</strong> Os registos médicos e dados pessoais dos pacientes serão conservados por um período de 20 anos após a última interação do paciente com a instituição, conforme exigido pela legislação aplicável à prestação de cuidados de saúde. Após esse período, os dados serão eliminados de forma segura.</li>
+    <li><strong>Dados retidos por razões legais ou contratuais:</strong> Dados específicos podem ser retidos por até 10 anos após o término da relação contratual ou o cumprimento da obrigação legal, dependendo dos requisitos legais aplicáveis. Após este prazo, quaisquer dados identificáveis serão removidos.</li>
+    <li><strong>Dados para fins de investigação e estatística:</strong> Alguns dados poderão ser retidos indefinidamente para fins de investigação ou estatísticas, desde que anonimizados de forma irreversível, garantindo que não possam ser associados a um titular específico.</li>
+</ul>
+<p>Os pacientes têm acesso à política de retenção de dados:</p>
+<ul>
+    <li>Durante o registo, sendo informados sobre os prazos de conservação de forma clara.</li>
+    <li>Nas configurações do perfil, onde podem consultar a Política de Privacidade a qualquer momento.</li>
+</ul>
+<p>Os dados identificáveis são tratados com confidencialidade e segurança durante todo o período de conservação, garantindo que após os prazos definidos, a eliminação ou anonimização é realizada de acordo com os melhores padrões de proteção de dados.</p>
+
+</div>
+
+
+
+</p-dialog>

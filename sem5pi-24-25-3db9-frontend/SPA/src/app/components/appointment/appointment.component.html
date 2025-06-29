@@ -1,0 +1,182 @@
+<div class="mb-4">
+  <app-menubar></app-menubar>
+</div>
+<div class="text-center">
+  <h1 class="fw-bold mt-2 main-title mb-4">Appointment
+    <p-button icon="pi pi-plus" class="me-3 ms-3" (click)="openCreateModal()" id="buttonCreateAppointment"/>
+  </h1>
+</div>
+
+<div class="container">
+  <p-messages [(value)]="message" id="message"/>
+
+  <p-table [value]="filteredAppointmentList" styleClass="p-datatable-striped" [tableStyle]="{ 'min-width': '20rem' }">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>
+          <p-columnFilter type="text" field="operationRequest.opTypeName.name"
+            placeholder="Search by operation type name" ariaLabel="Filter Operation Type"
+            [matchModeOptions]="matchModeOptions" matchMode="contains" />
+        </th>
+        <th>
+          <p-columnFilter type="text" field="dateTime" placeholder="Search by Date" ariaLabel="Filter Date"
+            [matchModeOptions]="matchModeOptions" matchMode="contains" />
+        </th>
+        <th>
+          <p-columnFilter type="text" field="operationRequest.patientName" placeholder="Search by patient id"
+            ariaLabel="Filter Patient" [matchModeOptions]="matchModeOptions" matchMode="contains" />
+        </th>
+        <th>
+          <p-columnFilter type="text" field="surgeryRoomNumber" placeholder="Search by Room Number"
+            ariaLabel="Filter Room Number" [matchModeOptions]="matchModeOptions" matchMode="contains" />
+        </th>
+        <!--
+        <th>
+          <p-columnFilter type="text" field="status" placeholder="Search by Status" ariaLabel="Filter Status"
+            [matchModeOptions]="matchModeOptions" matchMode="contains" />
+        </th>-->
+
+        <th></th>
+        <th></th>
+      </tr>
+      <tr>
+        <th class=>Operation Type Name</th>
+        <th class=>Date</th>
+        <th class=>Patient Name</th>
+        <th class=>Room Number</th>
+        <th class=>Status</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-appointment>
+      <tr>
+        <td>{{ appointment.operationRequest.opTypeName.name }}</td>
+        <td>{{ appointment.dateTime }}</td>
+        <td>{{ appointment.operationRequest.patientName }}</td>
+        <td>{{ appointment.surgeryRoomNumber }}</td>
+        <td>{{ appointment.status }}</td>
+        <td class="text-center">
+
+
+          <p-button icon="pi pi-eye" class="me-3" [rounded]="true" [text]="true"
+            (click)="openDetailsModal(appointment)" id="buttonDetailAppointment"/>
+          <p-button icon="pi pi-pencil" class="me-3" [rounded]="true" [text]="true"
+            (click)="openUpdateModal(appointment)" id="buttonUpdateAppointment"/>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+<p-dialog header="Appointment" [(visible)]="showDetails" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false"
+  [resizable]="false">
+  <ng-template pTemplate="header">
+  </ng-template>
+  <div class="container">
+    <h5 class="title-separator separator">General Information</h5>
+    <hr class="line-separator separator" />
+    <div class="row">
+      <label for="OpTypeName"><b>Operation Type:</b> {{ currentAppointment?.operationRequest.opTypeName.name }}</label>
+      <label for="Deadline" class="mt-2"><b>Date & Time:</b> {{ currentAppointment?.dateTime }}</label>
+      <label for="PatientName" class="mt-2"><b>Patient Name:</b> {{ currentAppointment?.operationRequest.patientName
+        }}</label>
+      <label for="DoctorName" class="mt-2"><b>Requested By:</b> {{ currentAppointment?.operationRequest.doctorName
+        }}</label>
+      <label for="SurgeryRoomNumber" class="mt-2"><b>Surgery Room Number:</b> {{ currentAppointment?.surgeryRoomNumber
+        }}</label>
+      <label for="Status" class="mt-2"><b>Status:</b> {{ currentAppointment?.status }}</label>
+      <label for="Staff" class="mt-2"><b>Staff:</b></label>
+      <div *ngIf="currentAppointment?.operationRequest?.selectedStaff">
+        <div *ngFor="let staff of currentAppointment.operationRequest.selectedStaff" class="staff-item">
+          {{ staff }}
+        </div>
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog header="Appointment" [(visible)]="showCreate" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false"
+  [resizable]="false" (onShow)="fetchOperationRequests()">
+  <ng-template pTemplate="header">
+    <h4 class="fw-bold">Create Appointment</h4>
+  </ng-template>
+  <div>Fields marked * are required</div>
+
+  <form [formGroup]="createAppointmentForm" (ngSubmit)="addAppointment()">
+    <div class="col-md-6">
+      <div class="mb-4">
+        <span class="p-float-label">
+          <p-listbox [options]="operationRequests" formControlName="selectedOpRequest"
+            [multiple]="false" [metaKeySelection]="false" [listStyle]="{ 'max-height': '400px', 'height': '400px' }"
+            [style]="{ width: '100%' }" (onChange)="onOperationRequestChange($event)">
+            <ng-template let-item let-i="index" pTemplate="item">
+              <div id="opRequest{{ i }}">
+                <span>{{ item.opTypeName.name }} / {{ item.patientName }} / {{ item.deadlineDate }}</span>
+              </div>
+            </ng-template>
+          </p-listbox>
+        </span>
+      </div>
+    </div>
+    <p-message *ngIf="
+          createAppointmentForm.get('opReqId')?.dirty &&
+          createAppointmentForm.get('opReqId')?.hasError('required')
+        " severity="error" text="Field is required"></p-message>
+
+    <span class="p-float-label mt-4">
+      <input pInputText formControlName="dateTime" autoWidth="false" id="appointmentDate" />
+      <label for="dateTime">Appointment Date *</label>
+    </span>
+    <p-message *ngIf="
+          createAppointmentForm.get('dateTime')?.dirty &&
+          createAppointmentForm.get('dateTime')?.hasError('required')
+        " severity="error" text="Field is required"></p-message>
+
+    <span class="p-float-label mt-4">
+      <input pInputText formControlName="surgeryRoomNumber" autoWidth="false" id="appointmentRoom"/>
+      <label for="surgeryRoomNumber">Surgery Room Number *</label>
+    </span>
+    <p-message *ngIf="
+          createAppointmentForm.get('surgeryRoomNumber')?.dirty &&
+          createAppointmentForm.get('surgeryRoomNumber')?.hasError('required')
+        " severity="error" text="Field is required"></p-message>
+
+    <p-button class="mt-4 d-block" id="buttonCreateSubmit" type="Submit" label="Submit" [disabled]="createAppointmentForm.invalid" />
+  </form>
+</p-dialog>
+
+<p-dialog header="Appointment" [(visible)]="showUpdate" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false"
+  [resizable]="false">
+  <ng-template pTemplate="header">
+    <h4 class="fw-bold">Update Appointment</h4>
+  </ng-template>
+  <form [formGroup]="updateAppointmentForm" (ngSubmit)="updateAppointment()">
+
+    <span class="p-float-label mt-4">
+      <input pInputText id="dateTime" formControlName="dateTime" autoWidth="false"
+        [style]="{ minWidth: '530px', maxWidth: '530px' }" />
+      <label for="dateTime">{{ currentAppointment?.dateTime }}</label>
+    </span>
+
+    <span class="p-float-label mt-4">
+      <input pInputText id="surgeryRoomNumber" formControlName="surgeryRoomNumber" autoWidth="false" [min]="1" />
+      <label for="surgeryRoomNumber">{{
+        currentAppointment?.surgeryRoomNumber}}</label>
+    </span>
+
+    <div formArrayName="staffList">
+      <div *ngFor="let staff of staffList.controls; let i = index">
+        <span class="p-float-label mt-4">
+          <input pInputText [formControlName]="i" autoWidth="false" />
+          <label>Staff Member {{ i + 1 }} *</label>
+        </span>
+        <p-message *ngIf="staff.dirty && staff.hasError('required')" severity="error"
+          text="Field is required"></p-message>
+        <button type="button" pButton icon="pi pi-minus" id="buttonRemoveStaff" class="p-button-danger p-mt-2"
+          (click)="removeStaff(i)">Remove</button>
+      </div>
+    </div>
+    <button type="button" pButton icon="pi pi-plus" id="buttonAddStaff" class="p-button-success p-mt-2" (click)="addStaff()"> Add
+      Staff</button>
+    <p-button class="mt-4 d-block" id="buttonUpdateSubmit" type="Submit" label="Submit"
+      [disabled]="updateAppointmentForm.invalid" />
+  </form>
+</p-dialog>

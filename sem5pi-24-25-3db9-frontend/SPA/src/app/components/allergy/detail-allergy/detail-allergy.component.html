@@ -1,0 +1,23 @@
+<p-dialog
+  header="Allergy"
+  [visible]="showDetails"
+  (visibleChange)="showDetailsChange.emit($event)"
+  [modal]="true"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <ng-template pTemplate="header">
+    <h4 class="fw-bold" id="name">{{ currentAllergy?.name }}</h4>
+  </ng-template>
+
+  <div class="row">
+    <label for="code" id="code"> <b>Code:</b> {{ currentAllergy?.code }}</label>
+  </div>
+
+  <div class="row mt-2">
+    <label for="description" id="description" *ngIf="currentAllergy?.description">
+      <b>Description:</b> {{ currentAllergy?.description }}</label
+    >
+  </div>
+</p-dialog>

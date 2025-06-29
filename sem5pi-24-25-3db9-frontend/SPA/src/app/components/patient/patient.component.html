@@ -1,0 +1,268 @@
+<div class="mb-4">
+  <app-menubar></app-menubar>
+</div>
+<div class="text-center">
+  <h1 class="fw-bold mt-2 main-title mb-4">
+    Patient
+    <p-button icon="pi pi-plus" class="me-3 ms-3" (click)="openCreateModal()" id="buttonCreatePatient" />
+  </h1>
+</div>
+
+<div class="container">
+  <p-messages [(value)]="message" id="message" />
+  <p-table [value]="filteredPatientList" styleClass="p-datatable-striped" [tableStyle]="{ 'min-width': '20rem' }">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>
+          <p-columnFilter type="text" field="fullName" placeholder="Search by name" ariaLabel="Filter Name"
+            [matchModeOptions]="matchModeOptions" matchMode="contains" />
+        </th>
+        <th>
+          <p-columnFilter type="text" field="email" placeholder="Search by email" ariaLabel="Filter Email"
+            [matchModeOptions]="matchModeOptions" matchMode="contains" />
+        </th>
+        <th>
+          <p-columnFilter type="text" field="dateOfBirth" placeholder="Search by date of birth"
+            ariaLabel="Filter Date of Birth" [matchModeOptions]="matchModeOptions" matchMode="contains" />
+        </th>
+        <th></th>
+      </tr>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Date of Birth</th>
+        <th></th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-patient>
+      <tr>
+        <td>{{ patient.fullName }}</td>
+        <td>{{ patient.email }}</td>
+        <td>{{ patient.dateOfBirth | date:'dd/MM/yyyy' }}</td>
+        <td class="text-center">
+          <p-button icon="pi pi-eye" class="me-2" [text]="true" (click)="openDetailsModal(patient)"
+            id="buttonDetailPatient"></p-button>
+          <p-button icon="pi pi-pencil" class="me-2" [text]="true" (click)="openEditModal(patient)"
+            id="buttonEditPatient"></p-button>
+          <p-button icon="pi pi-trash" class="me-2 p-button-danger" [text]="true" (click)="deletePatient(patient)"
+            id="buttonDeletePatient"></p-button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog header="Patient" [(visible)]="showCreate" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false"
+  [resizable]="false">
+  <ng-template pTemplate="header">
+    <h4 class="fw-bold">Create Patient Profile</h4>
+  </ng-template>
+
+  <form (ngSubmit)="submitNewPatient()" class="form-layout">
+    <div class="form-group">
+      <label for="firstName">First Name:</label>
+      <input pInputText type="text" id="firstName" [(ngModel)]="newPatient.firstName" name="firstName" required />
+    </div>
+    <div class="form-group">
+      <label for="lastName">Last Name:</label>
+      <input pInputText type="text" id="lastName" [(ngModel)]="newPatient.lastName" name="lastName" required />
+    </div>
+    <div class="form-group">
+      <label for="fullName">Full Name:</label>
+      <input pInputText type="text" id="fullName" [(ngModel)]="newPatient.fullName" name="fullName" required />
+    </div>
+    <div class="form-group">
+      <label for="gender">Gender:</label>
+      <input pInputText type="text" id="gender" [(ngModel)]="newPatient.gender" name="gender" />
+    </div>
+    <div class="form-group">
+      <label for="dateOfBirth">Date of Birth:</label>
+      <input pInputText type="date" id="dateOfBirth" [(ngModel)]="newPatient.dateOfBirth" name="dateOfBirth" required />
+    </div>
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input pInputText type="email" id="email" [(ngModel)]="newPatient.email" name="email" required />
+    </div>
+    <div class="form-group">
+      <label for="phone">Phone:</label>
+      <input pInputText type="text" id="phone" [(ngModel)]="newPatient.phone" name="phone" />
+    </div>
+    <div class="form-group">
+      <label for="emergencyContact">Emergency Contact:</label>
+      <input pInputText type="text" id="emergencyContact" [(ngModel)]="newPatient.emergencyContact"
+        name="emergencyContact" />
+    </div>
+
+    <div class="text-center mt-4">
+      <button pButton type="submit" label="Create" icon="pi pi-check" class="p-button-success"
+        id="buttonSubmit"></button>
+      <button pButton type="button" label="Cancel" icon="pi pi-times" (click)="showCreate = false"
+        class="p-button-secondary ms-2"></button>
+    </div>
+  </form>
+</p-dialog>
+
+
+
+
+<p-dialog header="Patient Details" [(visible)]="showDetails" [modal]="true" [style]="{ width: '50vw' }"
+  [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="header">
+    <h4 class="fw-bold">{{ currentPatient?.fullName }}</h4>
+  </ng-template>
+  <div class="container">
+    <!-- General Information Section -->
+    <h5 class="title-separator separator">General Information</h5>
+    <hr class="line-separator separator" />
+    <div class="row">
+      <label id="name" for="fullName"><b>Full Name:</b> {{ currentPatient?.fullName }}</label>
+      <label id="dateOfBirth" for="dateOfBirth" class="mt-2"><b>Date of Birth:</b> {{ currentPatient?.dateOfBirth |
+        date:'dd/MM/yyyy' }}</label>
+      <label id="gender" for="gender" class="mt-2"><b>Gender:</b> {{ currentPatient?.gender }}</label>
+      <label id="medicalRecordNumber" for="medicalRecordNumber" class="mt-2"><b>Medical Record Number:</b> {{
+        currentPatient?.medicalRecordNumber }}</label>
+    </div>
+
+    <!-- Contact Information Section -->
+    <h5 class="title-separator separator mt-4">Contact Information</h5>
+    <hr class="line-separator separator" />
+    <div class="row">
+      <label id="phone" for="phone"><b>Phone:</b> {{ currentPatient?.phone }}</label>
+      <label id="email" for="email" class="mt-2"><b>Email:</b> {{ currentPatient?.email }}</label>
+      <label id="emergencyContact" for="emergencyContact" class="mt-2"><b>Emergency Contact:</b> {{
+        currentPatient?.emergencyContact }}</label>
+    </div>
+
+    <!-- Medical Information Section (Optional) -->
+    <h5 class="title-separator separator mt-4">Medical Information</h5>
+    <hr class="line-separator separator" />
+    <div class="row">
+      <label for="allergies" class="mt-2"><b>Allergies:</b>
+        <span *ngIf="currentPatient?.allergies && currentPatient.allergies.length > 0">
+          {{ currentPatient?.allergies.join(', ') }}
+        </span>
+        <span *ngIf="!currentPatient?.allergies || currentPatient.allergies.length === 0">None</span>
+      </label>
+      <div class="d-flex align-items-center justify-content-start mt-2">
+        <label for="medicalRecord">
+          <b>Medical Record:</b>
+        </label>
+        <p-button icon="pi pi-eye" [text]="true" (click)="openMedicalRecordDetailsModal(currentPatient)"
+          id="buttonDetailPatientMedicalRecord"></p-button>
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog header="Edit Patient" [(visible)]="showEdit" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false"
+  [resizable]="false">
+  <ng-template pTemplate="header">
+    <h4 class="fw-bold">Edit Patient Profile</h4>
+  </ng-template>
+  <form (ngSubmit)="submitEditPatient()" class="form-layout">
+    <div class="form-group">
+      <label for="firstName">First Name:</label>
+      <input pInputText type="text" id="firstName" [(ngModel)]="editingPatient.firstName" name="firstName" required />
+    </div>
+    <div class="form-group">
+      <label for="lastName">Last Name:</label>
+      <input pInputText type="text" id="lastName" [(ngModel)]="editingPatient.lastName" name="lastName" required />
+    </div>
+    <div class="form-group">
+      <label for="fullName">Full Name:</label>
+      <input pInputText type="text" id="fullName" [(ngModel)]="editingPatient.fullName" name="fullName" required />
+    </div>
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input pInputText type="email" id="email" [(ngModel)]="editingPatient.email" name="email" required />
+    </div>
+    <div class="form-group">
+      <label for="phone">Phone:</label>
+      <input pInputText type="text" id="phone" [(ngModel)]="editingPatient.phone" name="phone" />
+    </div>
+    <div class="form-group">
+      <label for="emergencyContact">Emergency Contact:</label>
+      <input pInputText type="text" id="emergencyContact" [(ngModel)]="editingPatient.emergencyContact"
+        name="emergencyContact" />
+    </div>
+
+
+    <div class="text-center mt-4">
+      <button pButton type="submit" label="Save Changes" icon="pi pi-check" class="p-button-success"
+        id="buttonSubmit"></button>
+      <button pButton type="button" label="Cancel" icon="pi pi-times" (click)="showEdit = false"
+        class="p-button-secondary ms-2"></button>
+    </div>
+  </form>
+</p-dialog>
+
+<p-dialog header="Confirm Deletion" [(visible)]="showDeleteConfirm" [modal]="true" [style]="{ width: '30vw' }"
+  [closable]="false">
+  <p>Are you sure you want to delete the profile of <b>{{ currentPatient?.fullName }}</b>?</p>
+  <div class="text-center mt-3">
+    <button pButton label="Yes" icon="pi pi-check" class="p-button-danger me-2" (click)="confirmDeletePatient()"
+      id="confirmDelete"></button>
+    <button pButton label="No" icon="pi pi-times" class="p-button-secondary"
+      (click)="showDeleteConfirm = false"></button>
+  </div>
+</p-dialog>
+
+
+
+
+<p-dialog header="Medical Record Details" [(visible)]="showMedicalRecord" [modal]="true" [style]="{ width: '50vw' }"
+  [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="header">
+    <h4 class="fw-bold">Medical Record for Patient: {{ currentPatient?.fullName }}</h4>
+  </ng-template>
+  <div class="container">
+    <div *ngIf="medicalRecord?.allergies && medicalRecord.allergies.length > 0">
+      <h5 class="title-separator separator">Allergies</h5>
+      <hr class="line-separator separator" />
+      <div class="row">
+        <ul class="ps-5">
+          <li *ngFor="let allergy of medicalRecord.allergies">
+            {{ allergy }}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div *ngIf="medicalRecord?.medicalConditions && medicalRecord.medicalConditions.length > 0" class="mt-4">
+      <h5 class="title-separator separator">Medical Conditions</h5>
+      <hr class="line-separator separator" />
+      <div class="row">
+        <ul class="ps-5">
+          <li *ngFor="let condition of medicalRecord.medicalConditions">
+            {{ condition }}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div *ngIf="medicalRecord?.familyHistory && medicalRecord.familyHistory.length > 0" class="mt-4">
+      <h5 class="title-separator separator">Family History</h5>
+      <hr class="line-separator separator" />
+      <div class="row">
+        <ul class="ps-5">
+          <li *ngFor="let history of medicalRecord.familyHistory">
+            {{ history }}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div *ngIf="medicalRecord?.freeText && medicalRecord.freeText.length > 0" class="mt-4">
+      <h5 class="title-separator separator">Additional Notes</h5>
+      <hr class="line-separator separator" />
+      <div class="row">
+        <ul class="ps-5">
+          <li *ngFor="let note of medicalRecord.freeText">
+            {{ note }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</p-dialog>

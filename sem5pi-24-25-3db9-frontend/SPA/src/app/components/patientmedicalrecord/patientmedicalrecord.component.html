@@ -1,0 +1,290 @@
+<div class="mb-4">
+  <app-menubar></app-menubar>
+</div>
+
+<div class="text-center">
+  <h1 class="fw-bold mt-2 main-title mb-4">
+    Patient Medical Records
+    <p-button icon="pi pi-plus" class="me-3 ms-3" (click)="openCreateModal()" id="buttonCreateMedicalRecord"></p-button>
+  </h1>
+</div>
+
+<p-messages [(value)]="message" id="message"></p-messages>
+
+<p-table [value]="medicalRecordList" styleClass="p-datatable-striped" [tableStyle]="{ 'min-width': '30rem' }">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Patient Email</th>
+      <th>Allergies</th>
+      <th>Medical Conditions</th>
+      <th>Family History</th>
+      <th>Free Text</th>
+      <th>Actions</th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-record>
+    <tr>
+      <td>{{ record.patientId }}</td>
+      <td>{{ record.allergies?.join(', ') }}</td>
+      <td>{{ record.medicalConditions?.join(', ') }}</td>
+      <td>{{ record.familyHistory?.join(', ') }}</td>
+      <td>{{ record.freeText?.join(', ') }}</td>
+      <td class="text-center">
+        <p-button
+          icon="pi pi-pencil"
+          class="me-2"
+          label="Edit Allergies"
+          id="buttonEditAllergies"
+          [text]="true"
+          (click)="openEditAllergiesModal(record)"
+        ></p-button>
+        <p-button
+          icon="pi pi-pencil"
+          class="me-2"
+          label="Edit Conditions"
+          id="buttonEditConditions"
+          [text]="true"
+          (click)="openEditConditionsModal(record)"
+        ></p-button>
+        <p-button
+          icon="pi pi-pencil"
+          class="me-2"
+          label="Edit Family History"
+          id="buttonEditFamilyHistory"
+          [text]="true"
+          (click)="openEditFamilyHistoryModal(record)"
+        ></p-button>
+        <p-button
+          icon="pi pi-pencil"
+          class="me-2"
+          label="Edit Free Text"
+          id="buttonEditFreeText"
+          [text]="true"
+          (click)="openEditFreeTextModal(record)"
+        ></p-button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog class="mb-4" header="Create Patient Medical Record" [(visible)]="showCreateModal" [modal]="true"
+  [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+  <form [formGroup]="createMedicalRecordForm" (ngSubmit)="createMedicalRecord()">
+
+    <p-dropdown class="d-block" [showClear]="true" id="patientEmail" placeholder="Patient Email"
+      formControlName="patientId" [options]="patientsEmais" autoWidth="false"
+      [style]="{ minWidth: '300px', maxWidth: '300px' }" />
+
+    <span class="p-float-label mt-3">
+      <p-multiSelect formControlName="allergies" [options]="allergyNames" defaultLabel="Select Allergies"
+        id="createAllergies"></p-multiSelect>
+      <label for="createAllergies">Allergies</label>
+    </span>
+
+    <span class="p-float-label mt-3">
+      <p-multiSelect formControlName="medicalConditions" [options]="medicalConditionNames"
+        defaultLabel="Select Medical Conditions" id="createMedicalConditions"></p-multiSelect>
+      <label for="createMedicalConditions">Medical Conditions</label>
+    </span>
+
+    <div formArrayName="familyHistory" class="mt-3">
+      <label>Family History</label>
+      <div *ngFor="let fh of familyHistory.controls; let i = index" class="d-flex align-items-center gap-2 mb-2">
+        <input pInputText [formControlName]="i" id="createFamilyHistory_{{ i }}" [style]="{ width: '90%' }" />
+        <button pButton icon="pi pi-times" class="p-button-danger p-button-sm" type="button"
+          (click)="removeFamilyHistory(i)"></button>
+      </div>
+      <button pButton icon="pi pi-plus" class="p-button-secondary mt-2" type="button" id="buttonAddFamilyHistory"
+        (click)="addFamilyHistory()" label="Add Family History"></button>
+    </div>
+
+    <div formArrayName="freeText" class="mt-3">
+      <label>Free Text</label>
+      <div *ngFor="let ft of freeText.controls; let i = index" class="d-flex align-items-center gap-2 mb-2">
+        <input pInputText [formControlName]="i" id="createFreeText_{{ i }}" [style]="{ width: '90%' }" />
+        <button pButton icon="pi pi-times" class="p-button-danger p-button-sm" type="button"
+          (click)="removeFreeText(i)"></button>
+      </div>
+      <button pButton icon="pi pi-plus" class="p-button-secondary mt-2" type="button" id="buttonAddFreeText"
+        (click)="addFreeText()" label="Add Free Text"></button>
+    </div>
+
+    <div class="mt-4 text-right">
+      <button pButton type="submit" label="Submit" id="buttonCreateSubmit" [disabled]="createMedicalRecordForm.invalid"
+        class="p-button-primary"></button>
+    </div>
+  </form>
+</p-dialog>
+
+<p-dialog header="Edit Allergies" [(visible)]="showEditAllergiesModal" [modal]="true"
+  [style]="{ width: '60vw', height: '50vh' }" [draggable]="false" [resizable]="false">
+  <form [formGroup]="editAllergiesForm" (ngSubmit)="updateAllergies()">
+    <span class="p-float-label mt-3">
+      <p-multiSelect formControlName="allergies" [options]="allergyNames" defaultLabel="Select Allergies"
+        id="editAllergies"></p-multiSelect>
+      <label for="editAllergies">Allergies</label>
+    </span>
+
+    <div class="mt-4 text-right">
+      <button pButton type="submit" label="Save Changes" id="buttonSaveAllergies" [disabled]="editAllergiesForm.invalid"
+        class="p-button-primary"></button>
+      <button pButton type="button" label="Cancel" id="buttonCancelAllergies" class="p-button-secondary ms-2"
+        (click)="showEditAllergiesModal = false"></button>
+    </div>
+  </form>
+</p-dialog>
+
+<p-dialog header="Edit Medical Conditions" [(visible)]="showEditConditionsModal" [modal]="true"
+  [style]="{ width: '60vw', height: '50vh' }" [draggable]="false" [resizable]="false">
+  <form [formGroup]="editConditionsForm" (ngSubmit)="updateConditions()">
+    <span class="p-float-label mt-3">
+      <p-multiSelect formControlName="medicalConditions" [options]="medicalConditionNames"
+        defaultLabel="Select Medical Conditions" id="editMedicalConditions"></p-multiSelect>
+      <label for="editMedicalConditions">Medical Conditions</label>
+    </span>
+
+    <div class="mt-4 text-right">
+      <button
+        pButton
+        type="submit"
+        label="Save Changes"
+        id="buttonSaveConditions"
+        [disabled]="editConditionsForm.invalid"
+        class="p-button-primary"
+      ></button>
+      <button
+        pButton
+        type="button"
+        label="Cancel"
+        id="buttonCancelConditions"
+        class="p-button-secondary ms-2"
+        (click)="showEditConditionsModal = false"
+      ></button>
+    </div>
+  </form>
+</p-dialog>
+
+<p-dialog
+  header="Edit Family History"
+  [(visible)]="showEditFamilyHistoryModal"
+  [modal]="true"
+  [style]="{ width: '60vw', height: '50vh' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+<form [formGroup]="editFamilyHistoryForm" (ngSubmit)="updateFamilyHistory()">
+  <div formArrayName="familyHistory" class="mt-3">
+    <div *ngFor="let familyHistoryEntry of familyHistoryArray.controls; let i = index" [formGroupName]="i" class="mb-3">
+      <span class="p-float-label">
+        <input
+          type="text"
+          pInputText
+          formControlName="text"
+          id="familyHistoryId{{ i }}"
+          placeholder="Enter Family History"
+        />
+        <label for="familyHistory{{ i }}">Family History {{ i + 1 }}</label>
+      </span>
+      <button
+        type="button"
+        pButton
+        label="Remove Family History"
+        class="p-button-danger ml-2"
+        (click)="removeFamilyHistory(i)"
+        id="deletefamilyHistory{{ i }}"
+      ></button>
+    </div>
+  </div>
+
+  <button
+    id="addFamilyHistory"
+    type="button"
+    pButton
+    label="Add Family History"
+    class="p-button-secondary mt-2"
+    (click)="addFamilyHistoryEdit()"
+  ></button>
+
+  <div class="mt-4 text-right">
+    <button
+      pButton
+      type="submit"
+      label="Save Changes"
+      id="buttonSaveFamilyHistory"
+      [disabled]="editFamilyHistoryForm.invalid"
+      class="p-button-primary"
+    ></button>
+    <button
+      pButton
+      type="button"
+      label="Cancel"
+      id="buttonCancelFamilyHistory"
+      class="p-button-secondary ms-2"
+      (click)="showEditFamilyHistoryModal = false"
+    ></button>
+  </div>
+</form>
+</p-dialog>
+
+<p-dialog
+  header="Edit Free Text"
+  [(visible)]="showEditFreeTextModal"
+  [modal]="true"
+  [style]="{ width: '60vw', height: '50vh' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+<form [formGroup]="editFreeTextForm" (ngSubmit)="updateFreeText()">
+  <div formArrayName="freeText" class="mt-3">
+    <div *ngFor="let freeTextEntry of freeTextArray.controls; let i = index" [formGroupName]="i" class="mb-3">
+      <span class="p-float-label">
+        <input
+          type="text"
+          pInputText
+          formControlName="text"
+          id="freeTextId{{ i }}"
+          placeholder="Enter Free Text"
+        />
+        <label for="freeText{{ i }}">Free Text {{ i + 1 }}</label>
+      </span>
+      <button
+        type="button"
+        pButton
+        label="Remove Free Text"
+        class="p-button-danger ml-2"
+        (click)="removeFreeText(i)"
+        id="deletefreeText{{ i }}"
+      ></button>
+    </div>
+  </div>
+
+  <button
+    id="addFreeText"
+    type="button"
+    pButton
+    label="Add Free Text"
+    class="p-button-secondary mt-2"
+    (click)="addFreeTextEdit()"
+  ></button>
+
+  <div class="mt-4 text-right">
+    <button
+      pButton
+      type="submit"
+      label="Save Changes"
+      id="buttonSaveFreeText"
+      [disabled]="editFreeTextForm.invalid"
+      class="p-button-primary"
+    ></button>
+    <button
+      pButton
+      type="button"
+      label="Cancel"
+      id="buttonCancelFreeText"
+      class="p-button-secondary ms-2"
+      (click)="showEditFreeTextModal = false"
+    ></button>
+  </div>
+</form>
+</p-dialog>

@@ -1,0 +1,26 @@
+.main-title{
+    color: #0077b6
+}
+
+.pi:hover{
+    cursor:pointer;
+}
+
+.separator{
+    color: #0077b6
+}
+
+::ng-deep .p-message-icon {
+    display: none;
+}
+.p-dialog .p-dialog-content {
+    font-size: 16px; 
+    padding: 20px;  
+  }
+
+  textarea {
+    font-size: 16px; 
+    line-height: 1.5;
+    width: 100%; 
+    height: 150px; 
+  }

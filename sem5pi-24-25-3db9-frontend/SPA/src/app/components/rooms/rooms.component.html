@@ -1,0 +1,23 @@
+<div>
+  <app-menubar></app-menubar>
+</div>
+
+<div class="text-center">
+  <h1 class="fw-bold mt-2 main-title">Room Types  </h1>
+</div>
+
+<div class="container">
+  <div class="row mt-5 text-center">
+    <div class="col" *ngIf="role == 'Admin'">
+      <div class="card card-border" routerLink="/roomtype">
+        <div class="card card-border">
+          <div class="card-body">
+            <h5 class="card-title fw-bold card-title">Room Type</h5>
+            <p class="card-text">Add, list, remove</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>

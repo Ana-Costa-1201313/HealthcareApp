@@ -1,0 +1,91 @@
+<div class="mb-4">
+    <app-menubar></app-menubar>
+  </div>
+<div class="text-center">
+    <h1 class="fw-bold mt-2 main-title mb-4">Planning</h1>
+</div>
+
+<div class="container pt-5">
+    <form (ngSubmit)="submitForm()">
+        <div class="mb-12">
+            <p-messages [(value)]="message" id="message" [closable]="false" [showTransitionOptions]="'0ms'"
+                [hideTransitionOptions]="'0ms'" />
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-4">
+                    <p-dropdown class="d-block" placeholder="Room Number" [options]="roomNumbers" [showClear]="true"
+                        autoWidth="false" [style]="{ minWidth: '100%' }" name="roomNumber"
+                        [(ngModel)]="selectedRoomNumber" (ngModelChange)="onRoomNumberChange()"></p-dropdown>
+                </div>
+
+                <div class="mb-4">
+                    <span class="p-float-label">
+                        <p-calendar [(ngModel)]="date" name="date" [showIcon]="true" inputId="buttondisplay"
+                            [showOnFocus]="true" display="block" autoWidth="false" [style]="{ minWidth: '100%' }"
+                            (ngModelChange)="onDateChange()"></p-calendar>
+                    </span>
+                </div>
+
+                <div class="mb-4">
+                    <span class="p-float-label w-100">
+                        <p-selectButton [options]="stateOptions" [(ngModel)]="planType" name="stateOptions"
+                            optionLabel="label" optionValue="planType" display="block" autoWidth="false">
+                        </p-selectButton>
+                    </span>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="mb-4">
+                    <span class="p-float-label">
+                        <p-listbox [options]="filteredOpRequest" [(ngModel)]="selectedOpRequests"
+                            name="selectedOpRequests" [multiple]="true" [metaKeySelection]="false"
+                            [listStyle]="{ 'max-height': '400px', 'height': '400px' }" [style]="{ width: '100%' }"
+                            (onChange)="handleSelectionChange($event)">
+
+                            <ng-template let-item pTemplate="item">
+                                <div>
+                                    <span>{{ item.patientName }} / {{ item.opTypeName.name }}</span>
+                                </div>
+                            </ng-template>
+                        </p-listbox>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <p-button class="mt-4 d-block" id="buttonCreateSubmit" type="Submit" label="Create Planning"
+            [disabled]="isSubmitDisabled()" />
+    </form>
+</div>
+
+<p-dialog [(visible)]="isDialogVisible" [closable]="false" [modal]="true" [blockScroll]="true" header="Planning"
+    [draggable]="false">
+    <ng-container *ngIf="loading; else responseContent">
+        <div class="loading-container">
+            <p>Generating plan, please wait...</p>
+            <div class="d-flex justify-content-center align-items-center">
+                <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
+                    animationDuration="1s" />
+            </div>
+        </div>
+    </ng-container>
+    <ng-template #responseContent>
+        <div *ngIf="responseDataArray.length; else errorTemplate">
+            <ul>
+                <li *ngFor="let appointment of responseDataArray">
+                    <p><strong>Appointment DateTime:</strong> {{ appointment.dateTime }}</p>
+                    <p><strong>Status:</strong> {{ appointment.status }}</p>
+                    <p><strong>Surgery Room Number:</strong> {{ appointment.surgeryRoomNumber }}</p>
+                    <hr />
+                </li>
+            </ul>
+        </div>
+
+        <ng-template #errorTemplate>
+            <p>Error: {{ errorMessage }}</p>
+        </ng-template>
+        <button pButton label="Close" class="mt-2" (click)="isDialogVisible = false" (click)="onClose()"></button>
+
+    </ng-template>
+</p-dialog>

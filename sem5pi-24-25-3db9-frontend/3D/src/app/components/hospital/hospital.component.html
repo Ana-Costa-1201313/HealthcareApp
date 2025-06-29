@@ -1,0 +1,46 @@
+<canvas #canvas id="canvas" style="height: 100%; width: 100%;"></canvas>
+
+<div *ngIf="appointmentsVisible" class="modal-overlay">
+  <div class="modal">
+    <!-- No room selected -->
+    <div *ngIf="!currentRoomName">
+      <p>No room selected. Please select a room.</p>
+    </div>
+
+    <!-- Room selected -->
+    <div *ngIf="currentRoomName">
+      <h2>Room {{ currentRoomName }}</h2>
+
+
+      <div *ngIf="currentPickedRoom?.currentAppointment" class="tab-content" id="myTabContent">
+        <!-- Current Appointment Content -->
+        <div class="tab-pane fade" id="currentAppointment" role="tabpanel" aria-labelledby="currentAppointmentTab">
+          <h3>Current Appointment:</h3>
+          <div>
+            <p>Patient: {{ currentPickedRoom?.currentAppointment?.operationRequest?.patientName }}</p>
+            <p>Operation: {{ currentPickedRoom?.currentAppointment?.operationRequest?.opTypeName?.name }}</p>
+            <p>Start: {{ currentPickedRoom?.currentAppointment?.dateTime }}</p>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Appointments List Content -->
+      <div class="tab-pane fade show active" id="appointmentsList" role="tabpanel"
+        aria-labelledby="appointmentsListTab">
+        <div *ngIf="currentPickedRoom?.appointmentsDates?.length ?? 0 > 0; else noAppointments">
+          <h3>Today appointments:</h3>
+          <ul>
+            <li *ngFor="let appointment of currentPickedRoom?.appointmentsDates">
+              Start: {{ appointment.startDateTime }} End: {{ appointment.endDateTime }}
+            </li>
+          </ul>
+        </div>
+        <ng-template #noAppointments>
+          <p>There are no appointments for this room.</p>
+        </ng-template>
+      </div>
+    </div>
+    <button class="btn btn-secondary" (click)="closeModal()">Close</button>
+  </div>
+</div>

@@ -1,0 +1,179 @@
+<div class="mb-4">
+  <app-menubar></app-menubar>
+</div>
+<div class="text-center">
+  <h1 class="fw-bold mt-2 main-title mb-4">Medical Condition
+    <p-button *ngIf="role == 'Admin'" icon="pi pi-plus" class="me-3 ms-3" (click)="openCreateModal()" id="buttonCreateMedicalCondition"/>
+  </h1>
+</div>
+
+<div class="container">
+  <p-messages [(value)]="message" id="message" />
+
+  <p-table [value]="filteredMedicalConditionList" styleClass="p-datatable-striped"
+    [tableStyle]="{ 'min-width': '20rem' }">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>
+          <p-columnFilter type="text" field="code" placeholder="Search by code" ariaLabel="Filter Code"
+            [matchModeOptions]="matchModeOptions" matchMode="contains" />
+        </th>
+        <th>
+          <p-columnFilter type="text" field="name" placeholder="Search by name" ariaLabel="Filter Name"
+            [matchModeOptions]="matchModeOptions" matchMode="contains" />
+        </th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+      <tr>
+        <th class="w-45">Code</th>
+        <th class="w-45">Name</th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-medicalCondition>
+      <tr>
+        <td>{{ medicalCondition.code }}</td>
+        <td>{{ medicalCondition.name }}</td>
+        <td></td>
+        <td></td>
+        <td class="text-end">
+
+
+          <p-button icon="pi pi-eye" class="me-3" [rounded]="true" [text]="true"
+            (click)="openDetailsModal(medicalCondition)" id="buttonDetailMedicalCondition" />
+          <p-button *ngIf="role == 'Admin'" icon="pi pi-pencil" class="me-3" [rounded]="true" [text]="true" id="buttonUpdateMedicalCondition" (click)="openUpdateModal(medicalCondition)"/>
+
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog header="Medical Condition" [(visible)]="showDetails" [modal]="true" [style]="{ width: '50vw' }"
+  [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="header">
+    <h4 class="fw-bold">{{ currentMedicalCondition?.name }}</h4>
+  </ng-template>
+  <div class="container">
+    <h5 class="title-separator separator">General Information</h5>
+    <hr class="line-separator separator" />
+    <div class="row">
+      <label id="name" for="name"><b>Name:</b> {{ currentMedicalCondition?.name }}</label>
+      <label id="code" for="code"><b>Code:</b> {{ currentMedicalCondition?.code }}</label>
+      <label id="description" for="description"><b>Description:</b> {{ currentMedicalCondition?.description }}</label>
+      <label *ngIf="currentMedicalCondition?.symptoms?.length > 0" for="symptoms"><b>Symptoms:</b>
+      </label>
+      <ul class="ps-5">
+        <li *ngFor="let symptom of currentMedicalCondition?.symptoms">
+          {{ symptom }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</p-dialog>
+
+
+
+<p-dialog header="MedicalCondition" [(visible)]="showCreate" [modal]="true" [style]="{ width: '50vw' }"
+  [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="header">
+    <h4 class="fw-bold">Create Medical Condition</h4>
+  </ng-template>
+  <form [formGroup]="createMedicalConditionForm" (ngSubmit)="addMedicalCondition()">
+
+    <span class="p-float-label mt-4">
+      <input pInputText formControlName="name" id="name" autoWidth="false"
+        [style]="{ minWidth: '530px', maxWidth: '530px' }" />
+      <label for="name">Name</label>
+    </span>
+
+    <span class="p-float-label mt-4 mb-4">
+      <input pInputText formControlName="code" id="code" autoWidth="false"
+        [style]="{ minWidth: '530px', maxWidth: '530px' }" />
+      <label for="name">Code</label>
+    </span>
+
+    <p-floatLabel class="mt-4">
+      <textarea id="float-input" rows="5" cols="61" formControlName="description" pInputTextarea [autoResize]="false"
+        id="description"></textarea>
+      <label for="float-input">Description</label>
+    </p-floatLabel>
+
+
+
+    <div formArrayName="symptoms">
+      <div *ngFor="let fh of symptoms.controls; let i = index" [formGroupName]="i"
+        class="d-flex align-items-center gap-2 mb-4 mt-4">
+
+        <span class="p-float-label">
+          <input pInputText formControlName="symptomText" id="symptomText{{i}}" autoWidth="false"
+            [style]="{ minWidth: '530px', maxWidth: '530px' }" />
+          <label for="symptomText">Symptom</label>
+        </span>
+
+        <button pButton icon="pi pi-times" class="p-button-danger p-button-sm" type="button" (click)="removeSymptoms(i)"
+          aria-label="Remove"></button>
+      </div>
+
+      <button pButton icon="pi pi-plus" id="buttonCreateSymptoms" class="p-button-secondary" type="button"
+        (click)="addSymptoms()" label="Add Symptom"></button>
+
+      <p-button class="mt-4 d-block" id="buttonCreateSubmit" type="Submit" label="Submit"
+        [disabled]="createMedicalConditionForm.invalid" />
+    </div>
+
+  </form>
+</p-dialog>
+
+<p-dialog header="MedicalCondition" [(visible)]="showUpdate" [modal]="true" [style]="{ width: '50vw' }"
+  [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="header">
+    <h4 class="fw-bold">Update Medical Condition</h4>
+  </ng-template>
+  <form [formGroup]="updateMedicalConditionForm" (ngSubmit)="updateMedicalCondition()">
+
+    <span class="p-float-label mt-4">
+      <input pInputText id="name" formControlName="name" autoWidth="false"
+        [style]="{ minWidth: '530px', maxWidth: '530px' }" />
+      <label for="name">Name</label>
+    </span>
+
+    <span class="p-float-label mt-4 mb-4">
+      <input pInputText id="code" formControlName="code" autoWidth="false"
+        [style]="{ minWidth: '530px', maxWidth: '530px' }" />
+      <label for="code">Code</label>
+    </span>
+
+    <p-floatLabel class="mt-4">
+      <textarea id="float-input" rows="5" cols="61" formControlName="description" pInputTextarea [autoResize]="false"
+        id="description">{{ currentMedicalCondition?.description }}</textarea>
+      <label for="float-input">Description</label>
+    </p-floatLabel>
+
+    <div formArrayName="symptoms">
+      <h5 class="mt-3">Symptoms</h5>
+
+      <div *ngFor="let symptom of updateSymptoms.controls; let i = index" [formGroupName]="i"
+        class="d-flex align-items-center gap-2 mb-4 mt-4">
+
+        <span class="p-float-label">
+          <input pInputText formControlName="symptomText" id="symptomText{{i}}" autoWidth="false"
+            [style]="{ minWidth: '530px', maxWidth: '530px' }" />
+          <label for="symptomText">Symptom</label>
+        </span>
+
+        <button pButton icon="pi pi-times" class="p-button-danger p-button-sm" type="button"
+          (click)="removeUpdateSymptom(i)" aria-label="Remove"></button>
+      </div>
+
+      <button pButton icon="pi pi-plus" class="p-button-secondary" type="button" (click)="addUpdateSymptom()"
+        label="Add Symptom"></button>
+      <p-button class="mt-4 d-block" id="buttonUpdateSubmit" type="Submit" label="Submit"
+        [disabled]="updateMedicalConditionForm.invalid" />
+    </div>
+  </form>
+</p-dialog>

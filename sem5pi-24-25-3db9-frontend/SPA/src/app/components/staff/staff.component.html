@@ -1,0 +1,141 @@
+<div class="mb-4">
+  <app-menubar></app-menubar>
+</div>
+<div class="text-center">
+  <h1 class="fw-bold mt-2 main-title mb-4">
+    Staff
+    <p-button
+      icon="pi pi-plus"
+      class="me-3 ms-3"
+      (click)="openCreateModal()"
+      id="buttonCreate"
+    />
+  </h1>
+</div>
+
+<div class="container">
+  <p-messages [(value)]="message" id="message" />
+
+  <p-table
+    [value]="staffList"
+    styleClass="p-datatable-striped"
+    [tableStyle]="{ 'min-width': '20rem' }"
+    [paginator]="true"
+    [rows]="5"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    [totalRecords]="totalRecords"
+    [lazy]="true"
+    (onLazyLoad)="loadStaffLazy($event)"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Specialization</th>
+        <th></th>
+      </tr>
+      <tr>
+        <th>
+          <p-columnFilter
+            type="text"
+            field="name"
+            placeholder="Search by name"
+            ariaLabel="Filter Name"
+            [matchModeOptions]="matchModeOptions"
+            matchMode="contains"
+          />
+        </th>
+        <th>
+          <p-columnFilter
+            type="text"
+            field="email"
+            placeholder="Search by email"
+            ariaLabel="Filter Email"
+            [matchModeOptions]="matchModeOptions"
+            matchMode="contains"
+          />
+        </th>
+        <th>
+          <p-columnFilter
+            type="text"
+            field="specialization"
+            ariaLabel="Filter Specialization"
+            [matchModeOptions]="matchModeOptions"
+            matchMode="contains"
+            ><ng-template
+              pTemplate="filter"
+              let-value
+              let-filter="filterCallback"
+            >
+              <p-dropdown
+                [ngModel]="value"
+                [options]="specializationsNames"
+                (onChange)="filter($event.value)"
+                placeholder="Search by specialization"
+              >
+              </p-dropdown> </ng-template
+          ></p-columnFilter>
+        </th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-staff>
+      <tr>
+        <td>{{ staff.name }}</td>
+        <td>{{ staff.email }}</td>
+        <td>{{ staff.specialization }}</td>
+        <td class="text-center">
+          <p-button
+            icon="pi pi-eye"
+            class="me-2"
+            [text]="true"
+            (click)="openDetailsModal(staff)"
+            id="buttonDetails"
+          />
+          <p-button
+            icon="pi pi-pencil"
+            class="me-2"
+            [disabled]="!staff.active"
+            [text]="true"
+            (click)="openEditModal(staff)"
+            id="buttonEdit"
+          />
+          <p-button
+            icon="pi pi-trash"
+            class="me-2"
+            [text]="true"
+            [disabled]="!staff.active"
+            (click)="openDeactivateModal(staff)"
+            id="buttonDeactivate"
+          />
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<app-detail-staff
+  [(showDetails)]="showDetails"
+  [currentStaff]="currentStaff"
+></app-detail-staff>
+
+<app-delete-staff
+  [(deactivate)]="deactivate"
+  [currentStaff]="currentStaff"
+  (onDeactivate)="onDeactivate()"
+></app-delete-staff>
+
+<app-create-staff
+  [(showCreate)]="showCreate"
+  [specializationsNames]="specializationsNames"
+  (onAdd)="onAdd()"
+  (onFailure)="onFailure($event)"
+></app-create-staff>
+
+<app-edit-staff
+  [(showEdit)]="showEdit"
+  [currentStaff]="currentStaff"
+  [specializationsNames]="specializationsNames"
+  (onEdit)="onEdit()"
+  (onFailure)="onFailure($event)"
+></app-edit-staff>

@@ -1,0 +1,121 @@
+ <div class="mb-4">
+  <app-menubar></app-menubar>
+</div>
+<div class="text-center">
+  <h1 class="fw-bold mt-2 main-title mb-4">Room Types
+     <p-button icon="pi pi-plus" class="me-3 ms-3" (click)="openCreateModal()" id="buttonCreateRoomType" /> 
+  </h1>
+</div>
+
+<div class="container">
+  <p-messages [(value)]="message" id="message"></p-messages>
+  
+  <p-table [value]="filteredRoomTypeList" styleClass="p-datatable-striped" [tableStyle]="{'min-width': '20rem'}">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>
+          <p-columnFilter type="text" field="tipo" placeholder="Search by Room Type" ariaLabel="Filter Room Type" matchMode="contains" />
+        </th>
+        <th>
+          <p-columnFilter type="text" field="description" placeholder="Search by Description" ariaLabel="Filter Description" matchMode="contains" />
+        </th>
+        <th></th>
+      </tr>
+      <tr>
+        <th>Room Type</th>
+        <th>Description</th>
+        <th>Fit for Surgery</th>
+        <th></th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-roomType>
+      <tr>
+        <td>{{ roomType.surgeryRoomType}}</td>
+        <td>{{ roomType.description }}</td>
+        <td>{{ roomType.fitForSurgery }}</td>
+        <td class="text-center">
+          <!-- <p-button icon="pi pi-eye" class="me-2" [text]="true" (click)="openDetailsModal(roomType)" id="buttonDetailRoomType"></p-button>
+          <p-button icon="pi pi-pencil" class="me-2" [text]="true" (click)="openEditModal(roomType)" id="buttonEditRoomType"></p-button> -->
+          <!-- <p-button icon="pi pi-trash" class="me-2 p-button-danger" [text]="true" (click)="openDeleteModal(roomType)" id="buttonDeleteRoomType"></p-button> -->
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div> 
+
+<!-- Create Room Type Modal -->
+<p-dialog header="Create Room Type" [(visible)]="showCreate" [modal]="true" [style]="{ 'width': '50vw' }" [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="header">
+    <h4 class="fw-bold">Create New Room Type</h4>
+  </ng-template>
+
+  <form (ngSubmit)="submitNewRoomType()" class="form-layout"> 
+    <div class="form-group">
+      <label for="surgeryRoomType">Room Type Name:</label>
+      <input pInputText type="text" id="surgeryRoomType" [(ngModel)]="newRoomType.surgeryRoomType" name="surgeryRoomType" required />
+    </div>
+    <div class="form-group">
+      <label for="description">Description:</label>
+      <input pInputText type="text" id="description" [(ngModel)]="newRoomType.description" name="description" />
+    </div>
+    <div class="form-group">
+      <label for="description">Fit For Surgery:</label>
+      <input pInputText type="text" id="fitForSurgery" [(ngModel)]="newRoomType.fitForSurgery" name="Fit For Surgery" required />
+    </div>
+
+    <div class="text-center mt-4">
+      <button pButton type="submit" label="Create" icon="pi pi-check" class="p-button-success" id="buttonSubmit"></button>
+      <button pButton type="button" label="Cancel" icon="pi pi-times" (click)="showCreate = false" class="p-button-secondary ms-2"></button>
+    </div>
+  </form>
+</p-dialog>
+
+<!-- Room Type Details Modal -->
+<!-- <p-dialog header="Room Type Details" [(visible)]="showDetails" [modal]="true" [style]="{ 'width': '50vw' }" [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="header">
+    <h4 class="fw-bold">{{ currentRoomType?.tipo}}</h4>
+  </ng-template>
+  <div class="container">
+    <h5 class="title-separator separator">Room Type Information</h5>
+    <hr class="line-separator separator" />
+    <div class="row">
+      <label for="tipo"><b>Room Type Name:</b> {{ currentRoomType?.tipo}}</label>
+      <label for="description" class="mt-2"><b>Description:</b> {{ currentRoomType?.description }}</label>
+    </div>
+  </div>
+</p-dialog> -->
+
+<!-- Edit Room Type Modal -->
+<!-- <p-dialog header="Edit Room Type" [(visible)]="showEdit" [modal]="true" [style]="{ 'width': '50vw' }" [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="header">
+    <h4 class="fw-bold">Edit Room Type</h4>
+  </ng-template> -->
+
+  <!-- <form (ngSubmit)="submitEditRoomType()" class="form-layout"> -->
+  <!-- <form  class="form-layout">
+    <div class="form-group">
+      <label for="tipo">Room Type Name:</label>
+      <input pInputText type="text" id="tipo" [(ngModel)]="editingRoomType.tipo" name="tipo" required />
+    </div>
+    <div class="form-group">
+      <label for="description">Description:</label>
+      <input pInputText type="text" id="description" [(ngModel)]="editingRoomType.description" name="description" required />
+    </div>
+
+    <div class="text-center mt-4">
+      <button pButton type="submit" label="Save Changes" icon="pi pi-check" class="p-button-success" id="buttonSubmit"></button>
+      <button pButton type="button" label="Cancel" icon="pi pi-times" (click)="showEdit = false" class="p-button-secondary ms-2"></button>
+    </div>
+  </form>
+</p-dialog> -->
+
+<!-- Delete Room Type Confirmation Modal -->
+<!-- <p-dialog header="Confirm Deletion" [(visible)]="showDeleteConfirm" [modal]="true" [style]="{ 'width': '30vw' }" [closable]="false">
+  <p>Are you sure you want to delete the room type <b>{{ currentRoomType?.tipo}}</b>?</p>
+  <div class="text-center mt-3"> -->
+    <!-- <button pButton label="Yes" icon="pi pi-check" class="p-button-danger me-2" (click)="confirmDeleteRoomType()" id="confirmDelete"></button> -->
+    <!-- <button pButton label="Yes" icon="pi pi-check" class="p-button-danger me-2"  id="confirmDelete"></button>
+    <button pButton label="No" icon="pi pi-times" class="p-button-secondary" (click)="showDeleteConfirm = false"></button>
+  </div>
+</p-dialog> -->

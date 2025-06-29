@@ -1,0 +1,32 @@
+
+<p-dialog
+  header="Staff"
+  [visible]="deactivate"
+  (visibleChange)="deactivateChange.emit($event)"  
+  [modal]="true"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <ng-template pTemplate="header">
+    <h4 class="fw-bold">Deactivate Staff Profile</h4>
+  </ng-template>
+  <div class="mt-2 mb-4">Are you sure you want to deactivate this staff?</div>
+  <p-button
+    label="Confirm"
+    icon="pi pi-check"
+    class="me-3"
+    [text]="true"
+    (click)="deactivateStaff()"
+    id="buttonConfirmDelete"
+  />
+
+  <p-button
+    label="Cancel"
+    icon="pi pi-times"
+    class="me-3"
+    [text]="true"
+    severity="danger"
+    (click)="deactivateChange.emit(false)"
+  />
+</p-dialog>

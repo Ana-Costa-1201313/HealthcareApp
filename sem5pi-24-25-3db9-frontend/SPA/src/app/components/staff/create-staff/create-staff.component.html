@@ -1,0 +1,151 @@
+<p-dialog
+  header="Staff"
+  [visible]="showCreate"
+  (visibleChange)="showCreateChange.emit($event)"
+  [modal]="true"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <ng-template pTemplate="header">
+    <h4 class="fw-bold">Create Staff Profile</h4>
+  </ng-template>
+  <div>Fields marked * are required</div>
+
+  <form [formGroup]="createStaffForm" (ngSubmit)="addStaff()">
+    <span class="p-float-label mt-4">
+      <input
+        pInputText
+        formControlName="name"
+        autoWidth="false"
+        id="name"
+      />
+      <label for="name">Name *</label>
+    </span>
+    <p-message
+      *ngIf="
+        createStaffForm.get('name')?.dirty &&
+        createStaffForm.get('name')?.hasError('required')
+      "
+      severity="error"
+      text="Field is required"
+    ></p-message>
+
+    <span class="p-float-label mt-4">
+      <p-inputNumber
+        formControlName="licenseNumber"
+        autoWidth="false"
+        id="licenseNumber"
+      />
+      <label for="licenseNumber">License Number *</label>
+    </span>
+    <p-message
+      *ngIf="
+        createStaffForm.get('licenseNumber')?.dirty &&
+        createStaffForm.get('licenseNumber')?.hasError('required')
+      "
+      severity="error"
+      text="Field is required"
+    ></p-message>
+
+    <span class="p-float-label mt-4">
+      <p-inputNumber
+        formControlName="phone"
+        autoWidth="false"
+        [maxlength]="9"
+        id="phone"
+      />
+      <label for="phone">Phone Number *</label>
+    </span>
+    <p-message
+      *ngIf="
+        createStaffForm.get('phone')?.dirty &&
+        createStaffForm.get('phone')?.hasError('required')
+      "
+      severity="error"
+      text="Field is required"
+    ></p-message>
+
+    <span class="p-float-label mt-4">
+      <p-calendar
+        view="year"
+        dateFormat="yy"
+        formControlName="recruitmentYear"
+        autoWidth="false"
+        id="recruitmentYear"
+      />
+      <label for="recruitmentYear">Recruitment Year *</label>
+    </span>
+    <p-message
+      *ngIf="
+        createStaffForm.get('recruitmentYear')?.dirty &&
+        createStaffForm.get('recruitmentYear')?.hasError('required')
+      "
+      severity="error"
+      text="Field is required"
+    ></p-message>
+
+    <p-dropdown
+      class="mt-4 d-block"
+      placeholder="Role *"
+      formControlName="role"
+      [options]="roles"
+      [showClear]="true"
+      autoWidth="false"
+      [style]="{ minWidth: '60px', width: '50%' }"
+      id="role"
+    />
+    <p-message
+      *ngIf="
+        createStaffForm.get('role')?.dirty &&
+        createStaffForm.get('role')?.hasError('required')
+      "
+      severity="error"
+      text="Field is required"
+    ></p-message>
+
+    <p-dropdown
+      class="mt-4 d-block"
+      placeholder="Specialization"
+      formControlName="specialization"
+      [options]="specializationsNames"
+      [showClear]="true"
+      autoWidth="false"
+      [style]="{ minWidth: '60px', width: '50%' }"
+      id="specialization"
+    />
+
+    <span
+      class="p-float-label mt-4 mb-2"
+      formArrayName="availabilitySlots"
+      [style]="{ minWidth: '60px', width: '50%' }"
+      *ngFor="let slot of createStaffForm.controls.availabilitySlots.controls"
+    >
+      <p-calendar
+        selectionMode="range"
+        [showTime]="true"
+        [formControl]="slot"
+        autoWidth="false"
+        hideOnDateTimeSelect="false"
+        [style]="{ minWidth: '60px', width: '100%' }"
+        [showButtonBar]="true"
+        id="availabilitySlots"
+      />
+      <label for="availabilitySlots">Availability Slot</label>
+    </span>
+    <p-button
+      label="Add Slot"
+      icon="pi pi-plus"
+      class="me-3 ms-3"
+      (click)="addSlot()"
+    />
+
+    <p-button
+      class="mt-4 d-block"
+      type="Submit"
+      label="Submit"
+      [disabled]="createStaffForm.invalid"
+      id="buttonSubmit"
+    />
+  </form>
+</p-dialog>
