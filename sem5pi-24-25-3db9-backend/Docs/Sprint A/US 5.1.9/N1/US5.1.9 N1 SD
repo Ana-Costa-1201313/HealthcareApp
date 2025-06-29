@@ -1,0 +1,18 @@
+@startuml US9_Nivel1
+autonumber
+
+actor "Admin" as admin
+participant "HealthcareApp" as sys
+
+activate admin
+   admin -> sys : Requests to Edit Patient profile
+   activate sys
+   sys --> admin : Shows list of patients
+   admin -> sys : Selects a patient
+   sys --> admin : Requests specific patient data
+   admin -> sys : Provides updated patient data
+   sys --> admin : success message
+deactivate sys
+deactivate admin
+
+@enduml

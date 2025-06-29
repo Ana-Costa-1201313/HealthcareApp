@@ -1,0 +1,51 @@
+@startuml US11_Nivel3
+autonumber
+
+actor "Admin" as admin
+participant "Route" as r
+participant "PatientController" as ctrl
+participant "PatientService" as svc
+participant "IPatientRepository" as repo
+participant "Persistence" as db
+participant "PatientMapper" as map
+participant "dto:\nSearchPatientDto" as dto
+
+activate admin
+    admin -> r : GET /patients/SearchByVariousAttributes
+    activate r
+        r -> ctrl : SearchPatients(name, email, dateOfBirth, medicalRecordNumber)
+        activate ctrl
+
+            ctrl -> svc : SearchPatientsAsync(name, email, dateOfBirth, medicalRecordNumber)
+            activate svc
+
+                svc -> repo : SearchPatientsAsync(name, email, dateOfBirth, medicalRecordNumber)
+                activate repo
+
+                    repo -> db : query(patients)
+                    activate db
+                        db --> repo : list of patients
+                    deactivate db
+
+                deactivate repo
+
+                alt no patients found
+                    svc --> ctrl : null
+                    ctrl --> r : informs error
+                    admin <-- r : 404: No patients found
+                else patients found
+                    svc --> map : ToSearchPatientDto(patients)
+                    activate map
+                        map --> dto : create(patients)
+                    deactivate map
+                    
+                    svc --> ctrl : listDto
+            deactivate svc
+            ctrl --> r : listDto
+        deactivate ctrl
+    admin <-- r : 200: OK
+    deactivate r
+end
+deactivate admin
+
+@enduml

@@ -1,0 +1,9 @@
+# Student: Ana Costa - 1201313
+
+## Developed Tasks
+
+| Sprint | Task                                                                                                                                                                                |
+|--------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **A**  | [US 5.1.12](../../sprint%20A/US%205.1.12/readme.md) [US 5.1.13](../../sprint%20A/US%205.1.13/readme.md) [US 5.1.14](../../sprint%20A/US%205.1.14/readme.md) [US 5.1.15](../../sprint%20A/US%205.1.15/readme.md)                                                                                                                                       |
+| **B**  | [US 6.1.1](sprint%20B/US%206.1.1/readme.md) [US 6.1.3](sprint%20B/US%206.1.3/readme.md) [US 6.2.10](sprint%20B/US%206.2.10/readme.md) [US 6.2.11](sprint%20B/US%206.2.11/readme.md) [US 6.2.12](sprint%20B/US%206.2.12/readme.md) [US 6.2.13](sprint%20B/US%206.2.13/readme.md)   [US 6.3.2](sprint%20B/US%206.3.2/readme.md) [US 6.4.2](sprint%20B/US%206.4.2/readme.md) [US 6.4.4](sprint%20B/US%206.4.4/readme.md)    [US 6.5.2](sprint%20B/US%206.5.2/readme.md) [US 6.6.1](sprint%20B/US%206.6.1/readme.md) |
+| **C**  |         [US 7.1.5](../../sprint%20C/US%207.1.5/readme.md) [US 7.2.1](../../sprint%20C/US%207.2.1/readme.md) [US 7.2.2](../../sprint%20C/US%207.2.2/readme.md) [US 7.2.3](../../sprint%20C/US%207.2.3/readme.md) [US 7.2.15](../../sprint%20C/US%207.2.15/readme.md) [US 7.2.16](../../sprint%20C/US%207.2.16/readme.md) [US 7.3.3](../../sprint%20C/US%207.3.3/readme.md) [US 7.4.7](../../sprint%20C/US%207.4.7/readme.md) [US 7.4.10](../../sprint%20C/US%207.4.10/readme.md) [US 7.4.11](../../sprint%20C/US%207.4.11/readme.md) [US 7.5.2](../../sprint%20C/US%207.5.2/readme.md)          |

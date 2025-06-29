@@ -1,0 +1,54 @@
+@startuml US8_Nivel3
+autonumber
+
+actor "Admin" as admin
+participant "Route" as r
+participant "PatientController" as ctrl
+participant "PatientService" as svc
+participant "Patient" as patient
+participant "IPatientRepository" as repo
+participant "Persistence" as db
+participant "PatientMapper" as map
+participant "dto:\nPatientDto" as dto
+
+activate admin
+    admin -> r : POST /patients
+    activate r
+        r -> ctrl : Create(CreatePatientDto)
+        activate ctrl
+
+            ctrl -> svc : GenerateNextMedicalRecordNumber()
+            activate svc
+                svc --> ctrl : medicalRecordNumber
+            deactivate svc
+
+            ctrl -> svc : AddAsync(CreatePatientDto, medicalRecordNumber)
+            activate svc
+                svc --> patient : create()
+
+                alt patient profile not created
+                    svc --> ctrl : error
+                    ctrl --> r : informs error
+                    admin <-- r : 422 Unprocessable Content
+                else patient profile created successfully
+                    svc -> repo : AddAsync(patient)
+                    activate repo
+                        repo -> db : save
+                        activate db
+                        deactivate db
+                    deactivate repo
+
+                    svc -> map : ToPatientDto(patient)
+                    activate map
+                        map --> dto : created dto
+                    deactivate map
+
+                    svc --> ctrl : dto
+            deactivate svc
+            ctrl --> r : dto
+        deactivate ctrl
+    admin <-- r : 201 Created
+    deactivate r
+deactivate admin
+
+@enduml

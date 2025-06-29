@@ -1,0 +1,15 @@
+@startuml US8_Nivel1
+autonumber
+
+actor "Admin" as admin
+
+participant "HealthcareApp" as sys
+
+activate admin
+   admin -> sys :Requests to Create a new Patient profile
+   activate sys
+   sys --> admin :Requests the Patient Data 
+   admin -> sys :Inserts the Patient Data 
+   sys --> admin :success message
+
+@enduml

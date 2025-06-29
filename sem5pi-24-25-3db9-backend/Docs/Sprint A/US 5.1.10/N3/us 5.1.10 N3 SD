@@ -1,0 +1,54 @@
+@startuml US_Delete_Nivel3
+autonumber
+
+actor "Admin" as admin
+participant "Route" as r
+participant "PatientController" as ctrl
+participant "PatientService" as svc
+participant "Patient" as patient
+participant "IPatientRepository" as repo
+participant "Persistence" as db
+participant "PatientMapper" as map
+participant "dto:\nPatientDto" as dto
+
+activate admin
+    admin -> r : DELETE /patient/{id}
+    activate r
+        r -> ctrl : HardDelete(id)
+        activate ctrl
+            ctrl -> svc : DeleteAsync(id)
+            activate svc
+                svc -> repo : GetByIdAsync(id)
+                activate repo
+                    repo -> db : find(id)
+                    activate db
+                    deactivate db
+                deactivate repo
+
+                alt patient profile not found
+                    svc --> ctrl : null
+                    ctrl --> r : informs error
+                    admin <-- r : 404 Not Found
+                else patient profile found
+                    svc --> repo : Remove(patient)
+                    activate repo
+                        repo -> db : delete
+                        activate db
+                        deactivate db
+                    deactivate repo
+                    
+                    svc --> map : ToPatientDto(patient)
+                    activate map
+                        map --> dto : create(patient)
+                    deactivate map
+                    
+                    svc --> ctrl : dto
+            deactivate svc
+            ctrl --> r : dto
+        deactivate ctrl
+    admin <-- r : 200 OK
+    deactivate r
+end
+deactivate admin
+
+@enduml

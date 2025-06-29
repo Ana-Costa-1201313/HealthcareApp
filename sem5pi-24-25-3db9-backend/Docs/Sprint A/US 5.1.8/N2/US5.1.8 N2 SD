@@ -1,0 +1,24 @@
+@startuml US8_Nivel2
+autonumber
+
+actor "Admin" as admin
+participant ": SPA" as spa
+participant "BackOffice" as bo
+
+activate admin
+activate spa 
+admin -> spa : Requests to Create a new Patient profile
+spa --> admin : Requests the patient data
+
+admin-> spa : Inserts the patient data
+
+spa -> bo : Creates new Patient profile
+activate bo
+bo --> spa : success message
+deactivate bo
+spa --> admin : sucess message
+deactivate spa
+deactivate admin
+
+
+@enduml

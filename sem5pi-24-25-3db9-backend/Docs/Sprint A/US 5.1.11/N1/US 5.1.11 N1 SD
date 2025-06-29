@@ -1,0 +1,16 @@
+@startuml US11_Nivel1
+autonumber
+
+actor "Admin" as admin
+participant "HealthcareApp" as sys
+
+activate admin
+   admin -> sys : Requests to Search Patients by Various Attributes
+   activate sys
+   sys --> admin : Displays search form
+   admin -> sys : Enters search criteria (name, email, date of birth, medical record number)
+   sys --> admin : Displays list of matching patients
+deactivate sys
+deactivate admin
+
+@enduml

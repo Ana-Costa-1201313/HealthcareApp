@@ -1,0 +1,2 @@
+cd Backoffice
+dotnet test

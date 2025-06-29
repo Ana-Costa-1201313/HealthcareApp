@@ -1,0 +1,2 @@
+cd Auth
+dotnet run

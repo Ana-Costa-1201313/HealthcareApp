@@ -1,0 +1,23 @@
+@startuml US9_Nivel2
+autonumber
+
+actor "Admin" as admin
+participant ": SPA" as spa
+participant "BackOffice" as bo
+
+activate admin
+activate spa
+admin -> spa : Requests to Edit Patient profile
+spa --> admin : Requests specific patient data
+
+admin-> spa : Provides updated patient data
+
+spa -> bo : Updates Patient profile
+activate bo
+bo --> spa : success message
+deactivate bo
+spa --> admin : success message
+deactivate spa
+deactivate admin
+
+@enduml

@@ -1,0 +1,61 @@
+@startuml US9_Nivel3
+autonumber
+
+actor "Admin" as admin
+participant "Route" as r
+participant "PatientController" as ctrl
+participant "PatientService" as svc
+participant "Patient" as patient
+participant "IPatientRepository" as repo
+participant "Persistence" as db
+participant "PatientMapper" as map
+participant "dto:\nPatientDto" as dto
+
+participant "EmailService" as emailService
+
+activate admin
+    admin -> r : PATCH /patient/{id}
+    activate r
+        r -> ctrl : Patch(id, EditPatientDto)
+        activate ctrl
+
+            ctrl -> svc : PatchAsync(id, EditPatientDto)
+            activate svc
+                svc -> repo : GetByIdAsync(id)
+                activate repo
+                    repo -> db : find(id)
+                    activate db
+                    db --> repo : patient
+                    deactivate db
+                deactivate repo
+
+                alt patient profile not found
+                    svc --> ctrl : null
+                    ctrl --> r : informs error
+                    admin <-- r : 404: Not Found
+                else patient profile found
+                    svc --> patient : update details
+                    svc -> map : ToPatientDto(patient)
+                    activate map
+                        map --> dto : create(patient)
+                        activate dto
+                        deactivate dto
+                    deactivate map
+                    
+                    alt contact information changed
+                    
+                        svc -> emailService : SendEmail(oldEmail, message, subject)
+                    activate emailService
+                    deactivate emailService
+                    end
+                    
+                    svc --> ctrl : dto
+            deactivate svc
+            ctrl --> r : dto
+        deactivate ctrl
+    admin <-- r : 200: OK
+    deactivate r
+end
+deactivate admin
+
+@enduml
