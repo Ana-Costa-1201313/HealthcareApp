@@ -1,0 +1,56 @@
+Dados que o planning precisa:
+	Staff:
+		-> ID 									- sigla identificadora
+		-> Tipo 								- medico, enfermeiro, etc
+		-> Especialização 						- ortopedia,limpeza,anestesia, etc
+		-> Lista de procedimentos que realiza 	- [so2,so3,so4]	
+		
+		exemplo:
+			staff(ID	,Tipo,		Especialização,		Lista de procedimentos que realiza).
+			staff(d002	,doctor,	orthopaedist,		[so2,so3,so4]).
+
+	Agenda do Elemento do Staff:
+		-> ID do elemento do staff
+		-> Dia a que se refere a agenda
+		-> Lista de operações agendadas
+		
+		exemplo:
+			agenda_staff(d002,20241028,[]).
+		
+	Horario do Staff (timetable):
+		-> ID do elemento do staff
+		-> Dia a que se refere o horario - 20241028 - ANOmesDIA
+		-> Horario de trabalho
+		
+		exemplo:
+			timetable(ID, Dia, Horario). 
+		
+	Agenda do Elemento da sala de operações:
+		-> ID da sala de operações
+		-> Dia a que se refere a agenda
+		-> Lista de operações agendadas
+		
+		exemplo:
+			agenda_staff(ID,20241028,[(Str1,Fin1),(Str2,Fin2)]).
+			
+	Tipo de Operação e os tempos associados as partes de operação:
+		-> Tipo
+		-> Tempos
+		
+		exemplo:
+			surgery(SurgeryType,	TAnesthesia,	TSurgery,	TCleaning).
+			surgery(so5,			45,				20,			20). % SUM = 85
+			
+	Operações a serem agendadas:
+		-> ID operaçao
+		-> tipo de operação
+		
+		exemplo:
+			surgery_id(so100001,so2).
+
+	Determinar que staff vai participar em que operações:
+		-> ID operaçao
+		-> ID staff
+		
+		exemplo:
+			assignment_surgery(so100002,d002).

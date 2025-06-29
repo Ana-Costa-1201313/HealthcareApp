@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swipl Planning with Upload</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #result, #inputBox {
+            width: 100%;
+            margin-top: 20px;
+			height: 100px;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+        }
+        #inputBox {
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="colorful-text">Swipl Planning with Upload</h1>
+    <p>Click a button below to run a command and view the result:</p>
+
+    <!-- Buttons to execute commands -->
+    <button onclick="runCommand('consult')">Consult</button>
+    <button onclick="runBruteForceCommand()">Get Brute Force time solution</button>
+    <button onclick="runBruteForce2Command()">Get Brute Force occupied solution</button>
+    <button onclick="runHeuristicTimeCommand()">Get Heuristic time solution</button>
+    <button onclick="runHeuristicOccupiedCommand()">Get Heuristic Occupied solution</button>
+
+	<h3>Parameters for brute_force:</h3>
+    <label for="room">Room:</label>
+    <input type="text" id="room" placeholder="Enter room number">
+    
+    <label for="date">Date:</label>
+    <input type="text" id="date">
+
+    <h3>Result:</h3>
+    <textarea id="result" readonly></textarea>
+
+    <h3>Upload Data:</h3>
+    <textarea id="inputBox" placeholder="Write something to save to bc.pl"></textarea>
+    <button onclick="uploadData()">Upload</button>
+
+    <script>
+	
+		function runBruteForceCommand() {
+			const room = document.getElementById("room").value;
+			const date = document.getElementById("date").value;
+			var xhr = new XMLHttpRequest();
+			if (room && date) {
+                let endpoint = `http://localhost:8080/brute_force?day=${date}&room=${room}`;
+
+				xhr.onreadystatechange = function () {
+					if (xhr.readyState === 4) {
+						const resultBox = document.getElementById("result");
+						if (xhr.status === 200) {
+							// If the request was successful, display
+							 const responseJson = JSON.parse(xhr.responseText);
+                        
+							// Convert the JSON to a readable string
+							const formattedResponse = JSON.stringify(responseJson, null, 2);
+							
+							// Display the formatted JSON in the result textarea
+							resultBox.value = formattedResponse;
+						} else {
+							// If the request failed, show an error message
+							resultBox.value = `Error: ${xhr.statusText}`;
+						}
+					}
+				}
+				xhr.open('get', endpoint, true);
+				xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+				xhr.send();
+			} else {
+				alert("Please enter both room and date.");
+			}
+		}
+		
+		function runBruteForce2Command() {
+			const room = document.getElementById("room").value;
+			const date = document.getElementById("date").value;
+			var xhr = new XMLHttpRequest();
+			if (room && date) {
+                let endpoint = `http://localhost:8080/brute_force2?day=${date}&room=${room}`;
+
+				xhr.onreadystatechange = function () {
+					if (xhr.readyState === 4) {
+						const resultBox = document.getElementById("result");
+						if (xhr.status === 200) {
+							// If the request was successful, display
+							 const responseJson = JSON.parse(xhr.responseText);
+                        
+							// Convert the JSON to a readable string
+							const formattedResponse = JSON.stringify(responseJson, null, 2);
+							
+							// Display the formatted JSON in the result textarea
+							resultBox.value = formattedResponse;
+						} else {
+							// If the request failed, show an error message
+							resultBox.value = `Error: ${xhr.statusText}`;
+						}
+					}
+				}
+				xhr.open('get', endpoint, true);
+				xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+				xhr.send();
+			} else {
+				alert("Please enter both room and date.");
+			}
+		}
+		
+		
+		function runHeuristicTimeCommand() {
+			const room = document.getElementById("room").value;
+			const date = document.getElementById("date").value;
+			var xhr = new XMLHttpRequest();
+			if (room && date) {
+                let endpoint = `http://localhost:8080/obtain_heuristic_solution?day=${date}&room=${room}`;
+
+				xhr.onreadystatechange = function () {
+					if (xhr.readyState === 4) {
+						const resultBox = document.getElementById("result");
+						if (xhr.status === 200) {
+							// If the request was successful, display
+							 const responseJson = JSON.parse(xhr.responseText);
+                        
+							// Convert the JSON to a readable string
+							const formattedResponse = JSON.stringify(responseJson, null, 2);
+							
+							// Display the formatted JSON in the result textarea
+							resultBox.value = formattedResponse;
+						} else {
+							// If the request failed, show an error message
+							resultBox.value = `Error: ${xhr.statusText}`;
+						}
+					}
+				}
+				xhr.open('get', endpoint, true);
+				xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+				xhr.send();
+			} else {
+				alert("Please enter both room and date.");
+			}
+		}
+		
+		function runHeuristicOccupiedCommand() {
+			const room = document.getElementById("room").value;
+			const date = document.getElementById("date").value;
+			var xhr = new XMLHttpRequest();
+			
+			if (room && date) {
+				let endpoint = `http://localhost:8080/obtain_heuristic_occupied_solution?day=${date}&room=${room}`;
+		
+				xhr.onreadystatechange = function () {
+					if (xhr.readyState === 4) {
+						const resultBox = document.getElementById("result");
+						if (xhr.status === 200) {
+							// If the request was successful, display the raw response as text
+							resultBox.value = xhr.responseText;  // Display raw response text directly
+						} else {
+							// If the request failed, show an error message
+							resultBox.value = `Error: ${xhr.statusText}`;
+						}
+					}
+				}
+				xhr.open('get', endpoint, true);
+				xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+				xhr.send();
+			} else {
+				alert("Please enter both room and date.");
+			}
+		}
+	
+        // Placeholder function to simulate command execution
+        function runCommand(command) {
+            const resultBox = document.getElementById("result");
+            resultBox.value = "Running " + command + ", please wait...";
+
+            // Simulate running the command (this should be a backend call in a real-world scenario)
+            setTimeout(() => {
+                resultBox.value = "Command output for: " + command;
+            }, 1000);
+        }
+		
+
+    function uploadData() {
+		const inputBox = document.getElementById("inputBox");
+		const content = inputBox.value;
+	
+		fetch('http://localhost:8080/atualizarBC', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'text/plain',
+			},
+			body: content,
+		})
+		.then(response => response.text())
+		.then(data => {
+			alert("Data uploaded successfully!\n" + data);
+		})
+		.catch((error) => {
+			alert("Error uploading data: " + error);
+		});
+	
+		//inputBox.value = '';  // Clear the input box after upload
+	}
+	
+	function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    // Function to apply random colors to each letter
+    function colorText() {
+        const textElement = document.getElementById('colorful-text');
+        const text = textElement.innerText;
+        let coloredText = '';
+
+        // Loop through each character and wrap it in a span with a random color
+        for (let i = 0; i < text.length; i++) {
+            coloredText += `<span style="color:${getRandomColor()}">${text[i]}</span>`;
+        }
+
+        textElement.innerHTML = coloredText;  // Set the new colored text
+    }
+	
+	function colorAgendaLines(agendaData) {
+        const resultBox = document.getElementById("result");
+        let formattedAgenda = '';
+
+        agendaData.forEach((agenda, index) => {
+            const randomColor = getRandomColor();
+            formattedAgenda += `<div class="agenda-line" style="color: ${randomColor};">${agenda}</div>`;
+        });
+
+        resultBox.innerHTML = formattedAgenda;
+    }
+
+    // Call the function to color the text
+    colorText();
+    </script>
+</body>
+</html>
+\

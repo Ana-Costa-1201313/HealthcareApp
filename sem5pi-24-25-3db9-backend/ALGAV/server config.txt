@@ -1,0 +1,26 @@
+#!/bin/bash
+
+sudo a2enmod proxy
+sudo a2enmod proxy_http
+
+systemctl restart apache2
+
+sudo nano /etc/apache2/sites-available/prolog-server.conf
+
+#<VirtualHost *:80>
+#    ServerName prologAPI
+#    ServerAdmin root
+#	 ServerAlias www.prologAPI.com
+#    # Proxy requests to the SWI-Prolog HTTP server
+#    ProxyPass / http://localhost:8080/
+#    ProxyPassReverse / http://localhost:8080/
+#
+#    ErrorLog ${APACHE_LOG_DIR}/prolog_error.log
+#    CustomLog ${APACHE_LOG_DIR}/prolog_access.log combined
+#</VirtualHost>
+
+a2ensite prolog-server.conf
+
+systemctl reload apache2
+
+swipl http_server_prolog.pl
